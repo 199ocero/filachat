@@ -1,4 +1,4 @@
-# FilaChat is a plugin for integrating real-time customer support chat into your application. Provides tools for both customer and agent chat interfaces, with features for managing and maintaining chat conversations.
+# FilaChat
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/jaocero/filachat.svg?style=flat-square)](https://packagist.org/packages/jaocero/filachat)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/jaocero/filachat/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/jaocero/filachat/actions?query=workflow%3Arun-tests+branch%3Amain)
@@ -6,8 +6,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/jaocero/filachat.svg?style=flat-square)](https://packagist.org/packages/jaocero/filachat)
 
 
-
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+Filachat is a plugin for integrating real-time customer support chat into your application. Provides tools for both customer and agent chat interfaces, with features for managing and maintaining chat conversations..
 
 ## Installation
 
