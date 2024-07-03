@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace JaOcero\FilaChat\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class FilaChatCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'filachat';
 
     public $description = 'My command';
 

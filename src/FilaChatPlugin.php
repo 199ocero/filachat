@@ -1,15 +1,15 @@
 <?php
 
-namespace VendorName\Skeleton;
+namespace JaOcero\FilaChat;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 
-class SkeletonPlugin implements Plugin
+class FilaChatPlugin implements Plugin
 {
     public function getId(): string
     {
-        return 'skeleton';
+        return 'filachat';
     }
 
     public function register(Panel $panel): void
