@@ -146,7 +146,10 @@ class FilaChatServiceProvider extends PackageServiceProvider
     protected function getMigrations(): array
     {
         return [
+            'create_filachat_conversations_table',
+            'create_filachat_messages_table',
             'create_filachat_roles_table',
+            'create_filachat_user_role_table',
         ];
     }
 }
