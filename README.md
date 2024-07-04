@@ -16,7 +16,7 @@ You can install the package via composer:
 composer require jaocero/filachat
 ```
 
-Now run the following command to install FilaChatt. This handles all the migration, seeding, and config.
+Now run the following command to setup FilaChat. This handles all the migration, seeding, and config.
 
 ```bash
 php artisan filachat:install
