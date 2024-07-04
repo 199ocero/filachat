@@ -12,7 +12,6 @@ use Illuminate\Filesystem\Filesystem;
 use JaOcero\FilaChat\Commands\FilaChatCommand;
 use JaOcero\FilaChat\Testing\TestsFilaChat;
 use Livewire\Features\SupportTesting\Testable;
-use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -30,10 +29,7 @@ class FilaChatServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package->name(static::$name)
-            ->hasCommands($this->getCommands())
-            ->hasInstallCommand(function (InstallCommand $command) {
-                $command->askToStarRepoOnGitHub('199ocero/filachat');
-            });
+            ->hasCommands($this->getCommands());
 
         $configFileName = $package->shortName();
 

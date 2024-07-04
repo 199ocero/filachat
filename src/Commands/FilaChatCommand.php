@@ -27,10 +27,19 @@ class FilaChatCommand extends Command
     protected function publishAssets()
     {
         $this->info('Publishing assets...');
+
+        // Publish migrations
         Artisan::call('vendor:publish', [
             '--provider' => 'JaOcero\FilaChat\FilaChatServiceProvider',
-            '--tag' => ['migrations', 'config'],
+            '--tag' => 'filachat-migrations',
         ]);
+
+        // Publish configuration
+        Artisan::call('vendor:publish', [
+            '--provider' => 'JaOcero\FilaChat\FilaChatServiceProvider',
+            '--tag' => 'filachat',
+        ]);
+
         $this->info('Assets published.');
     }
 
