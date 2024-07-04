@@ -16,36 +16,60 @@ You can install the package via composer:
 composer require jaocero/filachat
 ```
 
-You can publish and run the migrations with:
+Now run the following command to install FilaChatt. This handles all the migration, seeding, and config.
 
 ```bash
-php artisan vendor:publish --tag="filachat-migrations"
-php artisan migrate
-```
-
-You can publish the config file with:
-
-```bash
-php artisan vendor:publish --tag="filachat-config"
-```
-
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag="filachat-views"
+php artisan filachat:install
 ```
 
 This is the contents of the published config file:
 
 ```php
+<?php
+
 return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Enable Roles
+    |--------------------------------------------------------------------------
+    |
+    | This option controls whether roles (user, agent) are used in the chat
+    | system. If disabled, all users can chat with each other without role
+    | constraints.
+    |
+    */
+    'enable_roles' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | User Model
+    |--------------------------------------------------------------------------
+    |
+    | This option specifies the user model used in the chat system. You can
+    | customize this if you have a different user model in your application.
+    |
+    */
+    'user_model' => \App\Models\User::class,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Agent Model
+    |--------------------------------------------------------------------------
+    |
+    | This option specifies the agent model used in the chat system. You can
+    | customize this if you have a different agent model in your application.
+    |
+    */
+    'agent_model' => \App\Models\User::class,
 ];
+
 ```
 
 ## Testing
 
 ```bash
-vendor/bin/pest
+composer test
 ```
 
 ## Changelog
