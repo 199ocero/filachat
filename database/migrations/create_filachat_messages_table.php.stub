@@ -1,0 +1,30 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('filachat_messages', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('filachat_conversation_id')->constrained('filachat_conversations');
+            $table->unsignedBigInteger('senderable_id');
+            $table->string('senderable_type');
+            $table->unsignedBigInteger('receiverable_id');
+            $table->string('receiverable_type');
+            $table->timestamp('last_read_at')->nullable();
+            $table->timestamp('sender_deleted_at')->nullable();
+            $table->timestamp('receiver_deleted_at')->nullable();
+            $table->text('message')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('filachat_messages');
+    }
+};

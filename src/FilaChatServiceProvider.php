@@ -36,7 +36,7 @@ class FilaChatServiceProvider extends PackageServiceProvider
                     ->publishConfigFile()
                     ->publishMigrations()
                     ->askToRunMigrations()
-                    ->askToStarRepoOnGitHub('jaocero/filachat');
+                    ->askToStarRepoOnGitHub('199ocero/filachat');
             });
 
         $configFileName = $package->shortName();
@@ -146,7 +146,7 @@ class FilaChatServiceProvider extends PackageServiceProvider
     protected function getMigrations(): array
     {
         return [
-            'create_filachat_table',
+            'create_filachat_roles_table',
         ];
     }
 }
