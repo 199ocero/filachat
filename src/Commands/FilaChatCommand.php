@@ -9,7 +9,7 @@ use JaOcero\FilaChat\Models\FilaChatRole;
 
 class FilaChatCommand extends Command
 {
-    public $signature = 'filachat::install';
+    public $signature = 'filachat:install';
 
     public $description = 'Setup the FilaChat plugin';
 
