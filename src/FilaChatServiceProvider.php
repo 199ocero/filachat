@@ -32,11 +32,7 @@ class FilaChatServiceProvider extends PackageServiceProvider
         $package->name(static::$name)
             ->hasCommands($this->getCommands())
             ->hasInstallCommand(function (InstallCommand $command) {
-                $command
-                    ->publishConfigFile()
-                    ->publishMigrations()
-                    ->askToRunMigrations()
-                    ->askToStarRepoOnGitHub('199ocero/filachat');
+                $command->askToStarRepoOnGitHub('199ocero/filachat');
             });
 
         $configFileName = $package->shortName();
