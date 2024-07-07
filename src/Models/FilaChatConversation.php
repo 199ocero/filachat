@@ -40,12 +40,14 @@ class FilaChatConversation extends Model
     public function getLastMessageTimeAttribute()
     {
         $latestMessage = $this->latestMessage();
+
         return $latestMessage ? $latestMessage->created_at->shortAbsoluteDiffForHumans() : null;
     }
 
     public function getLatestMessageAttribute()
     {
         $latestMessage = $this->latestMessage();
+
         return $latestMessage ? $latestMessage->message : null;
     }
 
