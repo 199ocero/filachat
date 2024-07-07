@@ -22,10 +22,10 @@ trait HasFilaChat
     public function allConversations()
     {
         return FilaChatConversation::where(function ($query) {
-            $query->where('senderable_type', self::class)
+            $query->where('senderable_type', $this->getMorphClass())
                 ->where('senderable_id', $this->id);
         })->orWhere(function ($query) {
-            $query->where('receiverable_type', self::class)
+            $query->where('receiverable_type', $this->getMorphClass())
                 ->where('receiverable_id', $this->id);
         });
     }

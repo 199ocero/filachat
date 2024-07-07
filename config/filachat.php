@@ -1,7 +1,5 @@
 <?php
 
-// config/chat-support.php
-
 return [
 
     /*
@@ -37,4 +35,26 @@ return [
     |
     */
     'agent_model' => \App\Models\User::class,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Sender Name Column
+    |--------------------------------------------------------------------------
+    |
+    | This option specifies the column name for the sender's name. You can
+    | customize this if your user model uses a different column name.
+    |
+    */
+    'sender_name_column' => 'name',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Receiver Name Column
+    |--------------------------------------------------------------------------
+    |
+    | This option specifies the column name for the receiver's name. You can
+    | customize this if your user model uses a different column name.
+    |
+    */
+    'receiver_name_column' => 'name',
 ];

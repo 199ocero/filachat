@@ -37,7 +37,7 @@ class FilaChatCommand extends Command
         // Publish configuration
         Artisan::call('vendor:publish', [
             '--provider' => 'JaOcero\FilaChat\FilaChatServiceProvider',
-            '--tag' => 'filachat',
+            '--tag' => 'filachat-config',
         ]);
 
         $this->info('Assets published.');
