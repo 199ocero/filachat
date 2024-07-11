@@ -6,7 +6,10 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/jaocero/filachat.svg?style=flat-square)](https://packagist.org/packages/jaocero/filachat)
 
 
-Filachat is a plugin for integrating real-time customer support chat into your application. Provides tools for both customer and agent chat interfaces, with features for managing and maintaining chat conversations.
+Filachat is a plugin for adding real-time customer support chat to your application. It provides tools for both customer and agent chat interfaces, with features for managing and maintaining conversations. You can also disable role constraints to let users chat with each other without restrictions.
+
+> [!IMPORTANT]  
+> This plugin has two roles: `agent` and `user`. When role restrictions are enabled, `agents` cannot chat with each other, and `users` cannot chat with each other. Only `agents` and `users` can chat with each other, and vice versa. If role restrictions are disabled, `agents` and `users` can freely chat with one another without any restrictions.
 
 ## Installation
 
@@ -16,7 +19,7 @@ You can install the package via composer:
 composer require jaocero/filachat
 ```
 
-Now run the following command to setup FilaChat. This handles all the migration, seeding, and config.
+Run the following command to install FilaChat, which will take care of all migrations and configurations.
 
 ```bash
 php artisan filachat:install
@@ -28,42 +31,38 @@ This is the contents of the published config file:
 <?php
 
 return [
-
-    /*
-    |--------------------------------------------------------------------------
-    | Enable Roles
-    |--------------------------------------------------------------------------
-    |
-    | This option controls whether roles (user, agent) are used in the chat
-    | system. If disabled, all users can chat with each other without role
-    | constraints.
-    |
-    */
     'enable_roles' => true,
-
-    /*
-    |--------------------------------------------------------------------------
-    | User Model
-    |--------------------------------------------------------------------------
-    |
-    | This option specifies the user model used in the chat system. You can
-    | customize this if you have a different user model in your application.
-    |
-    */
     'user_model' => \App\Models\User::class,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Agent Model
-    |--------------------------------------------------------------------------
-    |
-    | This option specifies the agent model used in the chat system. You can
-    | customize this if you have a different agent model in your application.
-    |
-    */
     'agent_model' => \App\Models\User::class,
+    'sender_name_column' => 'name',
+    'receiver_name_column' => 'name',
+    'slug' => 'filachat',
+    'navigation_icon' => 'heroicon-o-chat-bubble-bottom-center',
+    'max_content_width' => \Filament\Support\Enums\MaxWidth::Full,
 ];
 
+```
+
+> [!NOTE]  
+> This step is optional if you want to enable role restrictions. You only need to create an agent if you want to set up role-based chat support.
+
+When you first install this plugin, you won’t have any agents set up yet. Agents are like admins who can provide chat support to your customers or users. To create an agent, use the command below:
+
+```bash
+php artisan filachat:agent-create
+```
+
+Next, you need to apply the `HasFilaChat` trait to your models, whether it’s the `agent` model or the `user` model.
+
+```php
+<?php
+
+use JaOcero\FilaChat\Traits\HasFilaChat;
+
+class User extends Authenticatable
+{
+    use HasFilaChat;
+}
 ```
 
 ## Testing
