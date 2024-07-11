@@ -14,7 +14,6 @@ return new class extends Migration
             $table->string('senderable_type');
             $table->unsignedBigInteger('receiverable_id');
             $table->string('receiverable_type');
-            $table->softDeletes();
             $table->timestamps();
         });
     }

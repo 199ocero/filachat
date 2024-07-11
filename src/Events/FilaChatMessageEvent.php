@@ -20,7 +20,7 @@ class FilaChatMessageEvent implements ShouldBroadcastNow
      * Create a new event instance.
      */
     public function __construct(
-        public int $conversationId,
+        public ?int $conversationId,
         public int $messageId,
         public int $receiverId,
         public int $senderId,

@@ -13,6 +13,7 @@ use Filament\Support\Enums\MaxWidth;
 use JaOcero\FilaChat\Events\FilaChatMessageEvent;
 use JaOcero\FilaChat\Models\FilaChatConversation;
 use JaOcero\FilaChat\Models\FilaChatMessage;
+use JaOcero\FilaChat\Pages\FilaChat;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -198,11 +199,13 @@ class ChatList extends Component implements HasActions, HasForms
                     $conversation->save();
 
                     broadcast(new FilaChatMessageEvent(
-                        $this->selectedConversation->id,
+                        $conversation->id,
                         $message->id,
                         $receiverableId,
                         auth()->id(),
                     ));
+
+                    return $this->redirect(FilaChat::getUrl(tenant: filament()->getTenant()) . '/' . $conversation->id);
                 } catch (\Exception $exception) {
                     Notification::make()
                         ->title('Something went wrong')

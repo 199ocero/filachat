@@ -103,11 +103,11 @@
             <x-filament-actions::modals />
         </div>
     @else
-        <div class="flex flex-col items-center justify-center h-full">
+        <div class="flex flex-col items-center justify-center h-full p-3">
             <div class="p-3 mb-4 bg-gray-100 rounded-full dark:bg-gray-500/20">
                 <x-filament::icon icon="heroicon-m-x-mark" class="w-6 h-6 text-gray-500 dark:text-gray-400" />
             </div>
-            <p class="text-base text-gray-600 dark:text-gray-400">
+            <p class="text-base text-center text-gray-600 dark:text-gray-400">
                 No selected conversation
             </p>
         </div>

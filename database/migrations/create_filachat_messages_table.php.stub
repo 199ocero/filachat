@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('filachat_messages', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('filachat_conversation_id')->constrained('filachat_conversations');
+            $table->foreignId('filachat_conversation_id')->constrained('filachat_conversations')->onDelete('cascade');
             $table->unsignedBigInteger('senderable_id');
             $table->string('senderable_type');
             $table->unsignedBigInteger('receiverable_id');

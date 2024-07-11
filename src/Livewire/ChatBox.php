@@ -164,8 +164,7 @@ class ChatBox extends Component implements HasForms
              * This will only be executed if the conversation
              * is the selected conversation
              */
-            if ($data['conversationId'] === $this->selectedConversation->id) {
-
+            if ($data['conversationId'] && $data['conversationId'] === $this->selectedConversation?->id) {
                 $this->dispatch('chat-box-scroll-to-bottom');
 
                 $message = FilaChatMessage::find($data['messageId']);
