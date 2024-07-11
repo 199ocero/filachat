@@ -39,7 +39,7 @@ class FilaChat extends Page
         return config('filachat.slug') . '/{id?}';
     }
 
-    public static function getNavigationIcon(): string | Htmlable | null
+    public static function getNavigationIcon(): ?string
     {
         return config('filachat.navigation_icon');
     }
