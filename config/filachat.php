@@ -90,5 +90,5 @@ return [
     | all enum values from \Filament\Support\Enums\MaxWidth.
     |
     */
-    'max_content_width' => 'full',
+    'max_content_width' => \Filament\Support\Enums\MaxWidth::Full,
 ];
