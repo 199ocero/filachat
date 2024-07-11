@@ -57,7 +57,8 @@
                             <div class="max-w-md p-2 bg-gray-200 rounded-lg dark:bg-gray-800">
                                 <p class="text-sm">{{ $message->message }}</p>
                                 <p class="mt-1 text-xs text-gray-500 dark:text-gray-600 text-start">
-                                    {{ $message->created_at->format('g:i A') }}</p>
+                                    {{ \Carbon\Carbon::parse($message->created_at)->setTimezone(config('filachat.timezone', 'app.timezone'))->format('g:i A') }}
+                                </p>
                             </div>
                         </div>
                     @else
@@ -66,12 +67,12 @@
                             <div class="max-w-md p-2 text-white rounded-lg bg-primary-600 dark:bg-primary-500">
                                 <p class="text-sm">{{ $message->message }}</p>
                                 <p class="text-xs text-primary-300 dark:text-primary-200 text-end">
-                                    {{ $message->created_at->format('g:i A') }}</p>
+                                    {{ \Carbon\Carbon::parse($message->created_at)->setTimezone(config('filachat.timezone', 'app.timezone'))->format('g:i A') }}</p>
                             </div>
                             <template x-if="markAsRead || @js($message->last_read_at) !== null">
                                 <p class="text-xs text-gray-600 dark:text-primary-200 text-end">
                                     Seen at
-                                    {{ \Carbon\Carbon::parse($message->last_read_at)->format('g:i A') }}
+                                    {{ \Carbon\Carbon::parse($message->last_read_at)->setTimezone(config('filachat.timezone', 'app.timezone'))->format('g:i A') }}
                                 </p>
                             </template>
                         </div>

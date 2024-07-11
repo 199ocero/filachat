@@ -57,7 +57,7 @@
                                     <p class="text-sm font-semibold truncate">{{ $conversation->other_person_name }}
                                     </p>
                                     <p class="text-sm font-light text-gray-600 dark:text-gray-500">
-                                        {{ $conversation->last_message_time }}
+                                        {{ \Carbon\Carbon::parse($conversation->last_message_time)->setTimezone(config('filachat.timezone', 'app.timezone'))->shortAbsoluteDiffForHumans() }}
                                     </p>
                                 </div>
                                 <div class="flex items-center justify-between gap-1">

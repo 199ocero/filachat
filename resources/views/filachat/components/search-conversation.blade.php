@@ -26,7 +26,7 @@
                                     <div class="flex flex-col w-0 flex-1">
                                         <div class="flex flex-col-reverse sm:flex-row items-start sm:items-center sm:justify-between">
                                             <p class="text-sm font-semibold">{{ $message->other_person_name }}</p>
-                                            <p class="text-xs">{{ $message->created_at->format('F j, Y') }}</p>
+                                            <p class="text-xs">{{ \Carbon\Carbon::parse($message->created_at)->setTimezone(config('filachat.timezone', 'app.timezone'))->format('F j, Y') }}</p>
                                         </div>
                                         <p class="text-xs text-gray-600 dark:text-gray-400 truncate ">
                                             {{$message->message}}

@@ -91,4 +91,16 @@ return [
     |
     */
     'max_content_width' => \Filament\Support\Enums\MaxWidth::Full,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Timezone
+    |--------------------------------------------------------------------------
+    |
+    | This option specifies the timezone used in the chat system. You can
+    | customize this if you have a different timezone in your application. Please
+    | see supported timezones here: https://www.php.net/manual/en/timezones.php
+    |
+    */
+    'timezone' => 'UTC',
 ];

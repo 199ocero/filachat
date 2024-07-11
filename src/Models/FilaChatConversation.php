@@ -41,7 +41,7 @@ class FilaChatConversation extends Model
     {
         $latestMessage = $this->latestMessage();
 
-        return $latestMessage ? $latestMessage->created_at->shortAbsoluteDiffForHumans() : null;
+        return $latestMessage ? $latestMessage->created_at : null;
     }
 
     public function getLatestMessageAttribute()
