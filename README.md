@@ -112,9 +112,9 @@ class AdminPanelProvider extends PanelProvider
 ```
 
 > [!IMPORTANT]  
-> To use this plugin, you need to have Laravel Reverb installed and enable FilamentPHP broadcasting in your application.\
+> To use this plugin, you need to have Laravel Reverb installed and enable FilamentPHP broadcasting in your application.
 
-For the final step, you need to set up Laravel Reverb for your application. See [Reverb](https://laravel.com/docs/11.x/reverb) for more details. After that, enable broadcasting for your FilamentPHP application by following this [guide](https://laraveldaily.com/post/configure-laravel-reverb-filament-broadcasting) by Laravel Daily.\
+For the final step, you need to set up Laravel Reverb for your application. See [Reverb](https://laravel.com/docs/11.x/reverb) for more details. After that, enable broadcasting for your FilamentPHP application by following this [guide](https://laraveldaily.com/post/configure-laravel-reverb-filament-broadcasting) by Laravel Daily.
 
 Then everytime you start your application in your local environment, you will need to run the following command to enable broadcasting:
 
