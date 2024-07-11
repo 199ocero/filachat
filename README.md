@@ -2,7 +2,7 @@
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/jaocero/filachat.svg?style=flat-square)](https://packagist.org/packages/jaocero/filachat)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/199ocero/filachat/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/199ocero/filachat/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/199ocero/filachat/fix-php-code-styling.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/199ocero/filachat/actions?query=workflow%3A"Fix+PHP+code+styling"+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/199ocero/filachat/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/199ocero/filachat/actions?query=workflow%3A"Fix+PHP+code+styling"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/jaocero/filachat.svg?style=flat-square)](https://packagist.org/packages/jaocero/filachat)
 
 
