@@ -1,7 +1,5 @@
 <?php
 
-use Filament\Support\Enums\MaxWidth;
-
 return [
 
     /*
@@ -88,8 +86,8 @@ return [
     |--------------------------------------------------------------------------
     |
     | This option specifies the maximum width of the chat page. You can
-    | customize this if you have a different width in your application. Pl
+    | customize this if you have a different width in your application.
     |
     */
-    'max_content_width' => MaxWidth::Full,
+    'max_content_width' => \Filament\Support\Enums\MaxWidth::Full,
 ];
