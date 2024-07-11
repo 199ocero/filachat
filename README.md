@@ -42,6 +42,7 @@ return [
     'slug' => 'filachat',
     'navigation_icon' => 'heroicon-o-chat-bubble-bottom-center',
     'max_content_width' => \Filament\Support\Enums\MaxWidth::Full,
+    'timezone' => 'UTC',
 ];
 
 ```
