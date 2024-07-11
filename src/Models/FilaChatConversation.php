@@ -62,12 +62,12 @@ class FilaChatConversation extends Model
 
     public function getSenderNameAttribute()
     {
-        return $this->getUserName($this->senderable, config('chat-support.sender_name_column', 'name'));
+        return $this->getName($this->senderable, config('filachat.sender_name_column'));
     }
 
     public function getReceiverNameAttribute()
     {
-        return $this->getUserName($this->receiverable, config('chat-support.receiver_name_column', 'name'));
+        return $this->getName($this->receiverable, config('filachat.receiver_name_column'));
     }
 
     public function getOtherPersonNameAttribute()
@@ -75,17 +75,17 @@ class FilaChatConversation extends Model
         $authUserId = auth()->user()->id;
 
         if ($this->senderable_id === $authUserId) {
-            return $this->getUserName($this->receiverable, config('chat-support.receiver_name_column', 'name'));
+            return $this->getName($this->receiverable, config('filachat.receiver_name_column'));
         }
 
         if ($this->receiverable_id === $authUserId) {
-            return $this->getUserName($this->senderable, config('chat-support.sender_name_column', 'name'));
+            return $this->getName($this->senderable, config('filachat.sender_name_column'));
         }
 
         return 'Unknown Name';
     }
 
-    protected function getUserName($user, $column)
+    protected function getName($user, $column)
     {
         return $user ? $user->{$column} : 'Unknown Name';
     }

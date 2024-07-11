@@ -1,5 +1,7 @@
 <?php
 
+use Filament\Support\Enums\MaxWidth;
+
 return [
 
     /*
@@ -57,4 +59,37 @@ return [
     |
     */
     'receiver_name_column' => 'name',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Route Slug
+    |--------------------------------------------------------------------------
+    |
+    | This option specifies the route slug used in the chat system. You can
+    | customize this if you have a different route slug in your application.
+    |
+    */
+    'slug' => 'filachat',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Navigation Icon
+    |--------------------------------------------------------------------------
+    |
+    | This option specifies the navigation icon used in the chat navigation. You can
+    | customize this if you have a different icon in your application.
+    |
+    */
+    'navigation_icon' => 'heroicon-o-chat-bubble-bottom-center',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Max Content Width
+    |--------------------------------------------------------------------------
+    |
+    | This option specifies the maximum width of the chat page. You can
+    | customize this if you have a different width in your application. Pl
+    |
+    */
+    'max_content_width' => MaxWidth::Full,
 ];

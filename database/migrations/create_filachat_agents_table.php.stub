@@ -8,15 +8,18 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('filachat_roles', function (Blueprint $table) {
+        Schema::create('filachat_agents', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
+            $table->unsignedBigInteger('agentable_id');
+            $table->string('agentable_type');
             $table->timestamps();
+
+            $table->unique(['agentable_id', 'agentable_type']);
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('filachat_roles');
+        Schema::dropIfExists('filachat_agents');
     }
 };

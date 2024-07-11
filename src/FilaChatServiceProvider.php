@@ -10,8 +10,13 @@ use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Filesystem\Filesystem;
 use JaOcero\FilaChat\Commands\FilaChatCommand;
+use JaOcero\FilaChat\Commands\FilaChatCreateAgentCommand;
+use JaOcero\FilaChat\Livewire\ChatBox;
+use JaOcero\FilaChat\Livewire\ChatList;
+use JaOcero\FilaChat\Livewire\SearchConversation;
 use JaOcero\FilaChat\Testing\TestsFilaChat;
 use Livewire\Features\SupportTesting\Testable;
+use Livewire\Livewire;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -79,6 +84,11 @@ class FilaChatServiceProvider extends PackageServiceProvider
 
         // Testing
         Testable::mixin(new TestsFilaChat());
+
+        // Livewire
+        Livewire::component('filachat-chat-list', ChatList::class);
+        Livewire::component('filachat-chat-box', ChatBox::class);
+        Livewire::component('filachat-search-conversation', SearchConversation::class);
     }
 
     protected function getAssetPackageName(): ?string
@@ -105,6 +115,7 @@ class FilaChatServiceProvider extends PackageServiceProvider
     {
         return [
             FilaChatCommand::class,
+            FilaChatCreateAgentCommand::class,
         ];
     }
 
@@ -140,8 +151,7 @@ class FilaChatServiceProvider extends PackageServiceProvider
         return [
             'create_filachat_conversations_table',
             'create_filachat_messages_table',
-            'create_filachat_roles_table',
-            'create_filachat_user_role_table',
+            'create_filachat_agents_table',
         ];
     }
 }

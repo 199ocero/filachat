@@ -41,4 +41,24 @@ class FilaChatMessage extends Model
     {
         return $this->last_read_at !== null;
     }
+
+    public function getOtherPersonNameAttribute()
+    {
+        $authUserId = auth()->user()->id;
+
+        if ($this->senderable_id === $authUserId) {
+            return $this->getName($this->receiverable, config('filachat.receiver_name_column'));
+        }
+
+        if ($this->receiverable_id === $authUserId) {
+            return $this->getName($this->senderable, config('filachat.sender_name_column'));
+        }
+
+        return 'Unknown Name';
+    }
+
+    protected function getName($user, $column)
+    {
+        return $user ? $user->{$column} : 'Unknown Name';
+    }
 }

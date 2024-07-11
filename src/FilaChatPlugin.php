@@ -4,6 +4,7 @@ namespace JaOcero\FilaChat;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
+use JaOcero\FilaChat\Pages\FilaChat;
 
 class FilaChatPlugin implements Plugin
 {
@@ -14,7 +15,9 @@ class FilaChatPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
-        //
+        $panel->pages([
+            FilaChat::class,
+        ]);
     }
 
     public function boot(Panel $panel): void

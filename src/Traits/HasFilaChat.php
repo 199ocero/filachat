@@ -3,9 +3,8 @@
 namespace JaOcero\FilaChat\Traits;
 
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
+use JaOcero\FilaChat\Models\FilaChatAgent;
 use JaOcero\FilaChat\Models\FilaChatConversation;
-use JaOcero\FilaChat\Models\FilaChatRole;
 
 trait HasFilaChat
 {
@@ -30,8 +29,18 @@ trait HasFilaChat
         });
     }
 
-    public function role(): MorphOne
+    public function agents(): MorphMany
     {
-        return $this->morphOne(FilaChatRole::class, 'userable');
+        return $this->morphMany(FilaChatAgent::class, 'agentable');
+    }
+
+    public static function getAllAgentIds(): array
+    {
+        return FilaChatAgent::query()->where('agentable_type', config('filachat.agent_model'))->pluck('agentable_id')->toArray();
+    }
+
+    public function isAgent(): bool
+    {
+        return $this->agents()->exists();
     }
 }
