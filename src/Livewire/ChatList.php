@@ -78,50 +78,79 @@ class ChatList extends Component implements HasActions, HasForms
                             return 'To';
                         }
                     })
-                    ->options(function () use ($isRoleEnabled, $isAgent) {
+                    ->getSearchResultsUsing(function (string $search) use ($isRoleEnabled, $isAgent) {
+                        $authId = auth()->id();
+                        $searchTerm = '%' . trim($search) . '%';
+
+                        $senderNameColumn = config('filachat.sender_name_column');
+                        $receiverNameColumn = config('filachat.receiver_name_column');
+
+                        $name = $senderNameColumn ?? $receiverNameColumn;
+
+                        $userModelClass = config('filachat.user_model');
+                        $agentModelClass = config('filachat.agent_model');
+
                         if ($isRoleEnabled) {
 
                             $agentIds = config('filachat.agent_model')::getAllAgentIds();
 
                             if ($isAgent) {
-                                return config('filachat.user_model')::query()
+                                return $userModelClass::query()
                                     ->whereNotIn('id', $agentIds)
+                                    ->where(function ($query) use ($searchTerm, $senderNameColumn, $receiverNameColumn) {
+                                        $query->where($senderNameColumn, 'like', '%' . $searchTerm . '%')
+                                            ->orWhere($receiverNameColumn, 'like', '%' . $searchTerm . '%');
+                                    })
                                     ->get()
-                                    ->mapWithKeys(function ($item) {
-                                        return ['user_' . $item->id => $item->name];
+                                    ->mapWithKeys(function ($item) use ($name) {
+                                        return ['user_' . $item->id => $item->{$name}];
                                     });
                             }
 
-                            return config('filachat.agent_model')::query()
+                            return $agentModelClass::query()
                                 ->whereIn('id', $agentIds)
+                                ->where(function ($query) use ($searchTerm, $senderNameColumn, $receiverNameColumn) {
+                                    $query->where($senderNameColumn, 'like', '%' . $searchTerm . '%')
+                                        ->orWhere($receiverNameColumn, 'like', '%' . $searchTerm . '%');
+                                })
                                 ->get()
-                                ->mapWithKeys(function ($item) {
-                                    return ['agent_' . $item->id => $item->name];
+                                ->mapWithKeys(function ($item) use ($name) {
+                                    return ['agent_' . $item->id => $item->{$name}];
                                 });
-
                         } else {
-
-                            if (config('filachat.user_model') === config('filachat.agent_model')) {
-                                return config('filachat.user_model')::query()
-                                    ->whereNot('id', auth()->id())
+                            if ($userModelClass === $agentModelClass) {
+                                return $userModelClass::query()
+                                    ->whereNot('id', $authId)
+                                    ->where(function ($query) use ($searchTerm, $senderNameColumn, $receiverNameColumn) {
+                                        $query->where($senderNameColumn, 'like', '%' . $searchTerm . '%')
+                                            ->orWhere($receiverNameColumn, 'like', '%' . $searchTerm . '%');
+                                    })
                                     ->get()
-                                    ->mapWithKeys(function ($item) {
-                                        return ['user_' . $item->id => $item->name];
+                                    ->mapWithKeys(function ($item) use ($name) {
+                                        return ['user_' . $item->id => $item->{$name}];
                                     });
                             }
 
-                            $userModel = config('filachat.user_model')::query()
-                                ->whereNot('id', auth()->id())
+                            $userModel = $userModelClass::query()
+                                ->whereNot('id', $authId)
+                                ->where(function ($query) use ($searchTerm, $senderNameColumn, $receiverNameColumn) {
+                                    $query->where($senderNameColumn, 'like', '%' . $searchTerm . '%')
+                                        ->orWhere($receiverNameColumn, 'like', '%' . $searchTerm . '%');
+                                })
                                 ->get()
-                                ->mapWithKeys(function ($item) {
-                                    return ['user_' . $item->id => $item->name];
+                                ->mapWithKeys(function ($item) use ($name) {
+                                    return ['user_' . $item->id => $item->{$name}];
                                 });
 
-                            $agentModel = config('filachat.agent_model')::query()
-                                ->whereNot('id', auth()->id())
+                            $agentModel = $agentModelClass::query()
+                                ->whereNot('id', $authId)
+                                ->where(function ($query) use ($searchTerm, $senderNameColumn, $receiverNameColumn) {
+                                    $query->where($senderNameColumn, 'like', '%' . $searchTerm . '%')
+                                        ->orWhere($receiverNameColumn, 'like', '%' . $searchTerm . '%');
+                                })
                                 ->get()
-                                ->mapWithKeys(function ($item) {
-                                    return ['agent_' . $item->id => $item->name];
+                                ->mapWithKeys(function ($item) use ($name) {
+                                    return ['agent_' . $item->id => $item->{$name}];
                                 });
 
                             return $userModel->merge($agentModel);
