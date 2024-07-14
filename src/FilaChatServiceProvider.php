@@ -149,9 +149,9 @@ class FilaChatServiceProvider extends PackageServiceProvider
     protected function getMigrations(): array
     {
         return [
-            'create_filachat_conversations_table',
-            'create_filachat_messages_table',
-            'create_filachat_agents_table',
+            '00001_create_filachat_agents_table',
+            '00002_create_filachat_conversations_table',
+            '00003_create_filachat_messages_table',
         ];
     }
 }
