@@ -27,6 +27,31 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | User Searchable Columns
+    |--------------------------------------------------------------------------
+    |
+    | This option specifies the searchable columns for the user model. This is used
+    | to search for users in the chat.
+    |
+    */
+    'user_searchable_columns' => [
+        'name',
+        'email',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | User Chat List Display Column
+    |--------------------------------------------------------------------------
+    |
+    | This option specifies the column to be displayed when selecting the user
+    | in the chat list.
+    |
+    */
+    'user_chat_list_display_column' => 'name',
+
+    /*
+    |--------------------------------------------------------------------------
     | Agent Model
     |--------------------------------------------------------------------------
     |
@@ -38,11 +63,37 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Agent Searchable Columns
+    |--------------------------------------------------------------------------
+    |
+    | This option specifies the searchable columns for the agent model. This is used
+    | to search for agents in the chat.
+    |
+    */
+    'agent_searchable_columns' => [
+        'name',
+        'email',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Agent Chat List Display Column
+    |--------------------------------------------------------------------------
+    |
+    | This option specifies the column to be displayed when selecting the agent
+    | in the chat list.
+    |
+    */
+    'agent_chat_list_display_column' => 'name',
+
+    /*
+    |--------------------------------------------------------------------------
     | Sender Name Column
     |--------------------------------------------------------------------------
     |
     | This option specifies the column name for the sender's name. You can
-    | customize this if your user model uses a different column name.
+    | customize this if your user model uses a different column name. This also
+    | use to search for users in the chat.
     |
     */
     'sender_name_column' => 'name',
@@ -53,7 +104,8 @@ return [
     |--------------------------------------------------------------------------
     |
     | This option specifies the column name for the receiver's name. You can
-    | customize this if your user model uses a different column name.
+    | customize this if your user model uses a different column name. This also
+    | use to search for users in the chat.
     |
     */
     'receiver_name_column' => 'name',
