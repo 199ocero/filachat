@@ -8,12 +8,8 @@ use Filament\Actions\Contracts\HasActions;
 use Filament\Forms;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Notifications\Notification;
 use Filament\Support\Enums\MaxWidth;
-use JaOcero\FilaChat\Events\FilaChatMessageEvent;
-use JaOcero\FilaChat\Models\FilaChatConversation;
-use JaOcero\FilaChat\Models\FilaChatMessage;
-use JaOcero\FilaChat\Pages\FilaChat;
+use JaOcero\FilaChat\Services\ChatListService;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -74,88 +70,40 @@ class ChatList extends Component implements HasActions, HasForms
                             }
 
                             return 'To Agent';
-                        } else {
-                            return 'To';
                         }
+
+                        return 'To';
                     })
-                    ->getSearchResultsUsing(function (string $search) use ($isRoleEnabled, $isAgent) {
-                        $authId = auth()->id();
-                        $searchTerm = '%' . trim($search) . '%';
-
-                        $senderNameColumn = config('filachat.sender_name_column');
-                        $receiverNameColumn = config('filachat.receiver_name_column');
-
-                        $name = $senderNameColumn ?? $receiverNameColumn;
-
-                        $userModelClass = config('filachat.user_model');
-                        $agentModelClass = config('filachat.agent_model');
-
-                        if ($isRoleEnabled) {
-
-                            $agentIds = config('filachat.agent_model')::getAllAgentIds();
-
-                            if ($isAgent) {
-                                return $userModelClass::query()
-                                    ->whereNotIn('id', $agentIds)
-                                    ->where(function ($query) use ($searchTerm, $senderNameColumn, $receiverNameColumn) {
-                                        $query->where($senderNameColumn, 'like', '%' . $searchTerm . '%')
-                                            ->orWhere($receiverNameColumn, 'like', '%' . $searchTerm . '%');
-                                    })
-                                    ->get()
-                                    ->mapWithKeys(function ($item) use ($name) {
-                                        return ['user_' . $item->id => $item->{$name}];
-                                    });
-                            }
-
-                            return $agentModelClass::query()
-                                ->whereIn('id', $agentIds)
-                                ->where(function ($query) use ($searchTerm, $senderNameColumn, $receiverNameColumn) {
-                                    $query->where($senderNameColumn, 'like', '%' . $searchTerm . '%')
-                                        ->orWhere($receiverNameColumn, 'like', '%' . $searchTerm . '%');
-                                })
-                                ->get()
-                                ->mapWithKeys(function ($item) use ($name) {
-                                    return ['agent_' . $item->id => $item->{$name}];
-                                });
-                        } else {
-                            if ($userModelClass === $agentModelClass) {
-                                return $userModelClass::query()
-                                    ->whereNot('id', $authId)
-                                    ->where(function ($query) use ($searchTerm, $senderNameColumn, $receiverNameColumn) {
-                                        $query->where($senderNameColumn, 'like', '%' . $searchTerm . '%')
-                                            ->orWhere($receiverNameColumn, 'like', '%' . $searchTerm . '%');
-                                    })
-                                    ->get()
-                                    ->mapWithKeys(function ($item) use ($name) {
-                                        return ['user_' . $item->id => $item->{$name}];
-                                    });
-                            }
-
-                            $userModel = $userModelClass::query()
-                                ->whereNot('id', $authId)
-                                ->where(function ($query) use ($searchTerm, $senderNameColumn, $receiverNameColumn) {
-                                    $query->where($senderNameColumn, 'like', '%' . $searchTerm . '%')
-                                        ->orWhere($receiverNameColumn, 'like', '%' . $searchTerm . '%');
-                                })
-                                ->get()
-                                ->mapWithKeys(function ($item) use ($name) {
-                                    return ['user_' . $item->id => $item->{$name}];
-                                });
-
-                            $agentModel = $agentModelClass::query()
-                                ->whereNot('id', $authId)
-                                ->where(function ($query) use ($searchTerm, $senderNameColumn, $receiverNameColumn) {
-                                    $query->where($senderNameColumn, 'like', '%' . $searchTerm . '%')
-                                        ->orWhere($receiverNameColumn, 'like', '%' . $searchTerm . '%');
-                                })
-                                ->get()
-                                ->mapWithKeys(function ($item) use ($name) {
-                                    return ['agent_' . $item->id => $item->{$name}];
-                                });
-
-                            return $userModel->merge($agentModel);
+                    ->placeholder(function () use ($isRoleEnabled, $isAgent) {
+                        if ($isRoleEnabled && ! $isAgent) {
+                            return 'Select Agent by Name or Email';
                         }
+
+                        return 'Select User by Name or Email';
                     })
+                    ->searchPrompt(function () use ($isRoleEnabled, $isAgent) {
+                        if ($isRoleEnabled && ! $isAgent) {
+                            return 'Search Agent by Name or Email';
+                        }
+
+                        return 'Search User by Name or Email';
+                    })
+                    ->loadingMessage(function () use ($isRoleEnabled, $isAgent) {
+                        if ($isRoleEnabled && ! $isAgent) {
+                            return 'Loading Agents...';
+                        }
+
+                        return 'Loading Users...';
+                    })
+                    ->noSearchResultsMessage(function () use ($isRoleEnabled, $isAgent) {
+                        if ($isRoleEnabled && ! $isAgent) {
+                            return 'No Agents Found.';
+                        }
+
+                        return 'No Users Found.';
+                    })
+                    ->getSearchResultsUsing(fn (string $search): array => ChatListService::make()->getSearchResults($search)->toArray())
+                    ->getOptionLabelUsing(fn ($value): ?string => ChatListService::make()->getOptionLabel($value))
                     ->searchable()
                     ->required(),
                 Forms\Components\Textarea::make('message')
@@ -165,85 +113,7 @@ class ChatList extends Component implements HasActions, HasForms
                     ->autosize(),
             ])
             ->modalWidth(MaxWidth::Large)
-            ->action(function (array $data) {
-
-                try {
-                    $receiverableId = $data['receiverable_id'];
-
-                    if (preg_match('/^user_(\d+)$/', $receiverableId, $matches)) {
-                        $receiverableType = config('filachat.user_model');
-                        $receiverableId = (int) $matches[1];
-                    }
-
-                    if (preg_match('/^agent_(\d+)$/', $receiverableId, $matches)) {
-                        $receiverableType = config('filachat.agent_model');
-                        $receiverableId = (int) $matches[1];
-                    }
-
-                    $foundConversation = FilaChatConversation::query()
-                        ->where(function ($query) use ($receiverableId, $receiverableType) {
-                            $query->where(function ($query) {
-                                $query->where('senderable_id', auth()->id())
-                                    ->where('senderable_type', auth()->user()::class);
-                            })
-                                ->orWhere(function ($query) use ($receiverableId, $receiverableType) {
-                                    $query->where('senderable_id', $receiverableId)
-                                        ->where('senderable_type', $receiverableType);
-                                });
-                        })
-                        ->where(function ($query) use ($receiverableId, $receiverableType) {
-                            $query->where(function ($query) use ($receiverableId, $receiverableType) {
-                                $query->where('receiverable_id', $receiverableId)
-                                    ->where('receiverable_type', $receiverableType);
-                            })
-                                ->orWhere(function ($query) {
-                                    $query->where('receiverable_id', auth()->id())
-                                        ->where('receiverable_type', auth()->user()::class);
-                                });
-                        })
-                        ->first();
-
-                    if (! $foundConversation) {
-                        $conversation = FilaChatConversation::query()->create([
-                            'senderable_id' => auth()->id(),
-                            'senderable_type' => auth()->user()::class,
-                            'receiverable_id' => $receiverableId,
-                            'receiverable_type' => $receiverableType,
-                        ]);
-                    } else {
-                        $conversation = $foundConversation;
-                    }
-
-                    $message = FilaChatMessage::query()->create([
-                        'filachat_conversation_id' => $conversation->id,
-                        'senderable_id' => auth()->id(),
-                        'senderable_type' => auth()->user()::class,
-                        'receiverable_id' => $receiverableId,
-                        'receiverable_type' => $receiverableType,
-                        'message' => $data['message'],
-                    ]);
-
-                    $conversation->updated_at = now();
-
-                    $conversation->save();
-
-                    broadcast(new FilaChatMessageEvent(
-                        $conversation->id,
-                        $message->id,
-                        $receiverableId,
-                        auth()->id(),
-                    ));
-
-                    return $this->redirect(FilaChat::getUrl(tenant: filament()->getTenant()) . '/' . $conversation->id);
-                } catch (\Exception $exception) {
-                    Notification::make()
-                        ->title('Something went wrong')
-                        ->body($exception->getMessage())
-                        ->danger()
-                        ->persistent()
-                        ->send();
-                }
-            });
+            ->action(fn (array $data) => ChatListService::make()->createConversation($data));
     }
 
     public function render()

@@ -34,24 +34,7 @@ Run the following command to install FilaChat, which will take care of all migra
 php artisan filachat:install
 ```
 
-This is the contents of the published config file:
-
-```php
-<?php
-
-return [
-    'enable_roles' => true,
-    'user_model' => \App\Models\User::class,
-    'agent_model' => \App\Models\User::class,
-    'sender_name_column' => 'name',
-    'receiver_name_column' => 'name',
-    'slug' => 'filachat',
-    'navigation_icon' => 'heroicon-o-chat-bubble-bottom-center',
-    'max_content_width' => \Filament\Support\Enums\MaxWidth::Full,
-    'timezone' => 'UTC',
-];
-
-```
+You can view the full content of the config file here: [config/filachat.php](https://github.com/199ocero/filachat/blob/main/config/filachat.php)
 
 > [!NOTE]  
 > This step is optional if you want to enable role restrictions. You only need to create an agent if you want to set up role-based chat support.
