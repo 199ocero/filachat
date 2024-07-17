@@ -37,13 +37,32 @@
             <!-- Message Item -->
             @foreach ($messages as $index => $message)
                 <div wire:key="{{ $message->id }}">
+                  @php
+                        $nextMessage = $messages[$index + 1] ?? null;
+                        $nextMessageDate = $nextMessage ? \Carbon\Carbon::parse($nextMessage->created_at)->setTimezone(config('filachat.timezone', 'app.timezone'))->format('Y-m-d') : null;
+                        $currentMessageDate = \Carbon\Carbon::parse($message->created_at)->setTimezone(config('filachat.timezone', 'app.timezone'))->format('Y-m-d');
+
+                        // Show date badge if the current message is the last one of the day
+                        $showDateBadge = $currentMessageDate !== $nextMessageDate;
+                    @endphp
+
+                    @if ($showDateBadge)
+                        <div class="flex justify-center">
+                            <x-filament::badge>
+                                {{ \Carbon\Carbon::parse($message->created_at)->setTimezone(config('filachat.timezone', 'app.timezone'))->format('F j, Y') }}
+                            </x-filament::badge>
+                        </div>
+                    @endif
                     @if ($message->senderable_id !== auth()->user()->id)
                         @php
+                            $previousMessageDate = isset($messages[$index - 1]) ? \Carbon\Carbon::parse($messages[$index - 1]->created_at)->setTimezone(config('filachat.timezone', 'app.timezone'))->format('Y-m-d') : null;
+
+                            $currentMessageDate = \Carbon\Carbon::parse($message->created_at)->setTimezone(config('filachat.timezone', 'app.timezone'))->format('Y-m-d');
+
                             $previousSenderId = $messages[$index - 1]->senderable_id ?? null;
-                            // Show avatar if the current message is the first in a consecutive sequence
-                            $showAvatar =
-                                $message->senderable_id !== auth()->user()->id &&
-                                $message->senderable_id !== $previousSenderId;
+
+                            // Show avatar if the current message is the first in a consecutive sequence or a new day
+                            $showAvatar = $message->senderable_id !== auth()->user()->id && ($message->senderable_id !== $previousSenderId || $currentMessageDate !== $previousMessageDate);
                         @endphp
                         <!-- Left Side -->
                         <div class="flex items-end gap-2 mb-2">
@@ -57,7 +76,7 @@
                             <div class="max-w-md p-2 bg-gray-200 rounded-lg dark:bg-gray-800">
                                 <p class="text-sm">{{ $message->message }}</p>
                                 <p class="mt-1 text-xs text-gray-500 dark:text-gray-600 text-start">
-                                    {{ \Carbon\Carbon::parse($message->created_at)->setTimezone(config('filachat.timezone', 'app.timezone'))->format('g:i A') }}
+                                    {{ \Carbon\Carbon::parse($message->created_at)->setTimezone(config('filachat.timezone', 'app.timezone'))->format('F j, Y') }}
                                 </p>
                             </div>
                         </div>
@@ -67,12 +86,22 @@
                             <div class="max-w-md p-2 text-white rounded-lg bg-primary-600 dark:bg-primary-500">
                                 <p class="text-sm">{{ $message->message }}</p>
                                 <p class="text-xs text-primary-300 dark:text-primary-200 text-end">
-                                    {{ \Carbon\Carbon::parse($message->created_at)->setTimezone(config('filachat.timezone', 'app.timezone'))->format('g:i A') }}</p>
+                                    {{ \Carbon\Carbon::parse($message->created_at)->setTimezone(config('filachat.timezone', 'app.timezone'))->format('F j, Y') }}
+                                </p>
                             </div>
                             <template x-if="markAsRead || @js($message->last_read_at) !== null">
                                 <p class="text-xs text-gray-600 dark:text-primary-200 text-end">
                                     Seen at
-                                    {{ \Carbon\Carbon::parse($message->last_read_at)->setTimezone(config('filachat.timezone', 'app.timezone'))->format('g:i A') }}
+                                    @php
+                                        $lastReadAt = \Carbon\Carbon::parse($message->last_read_at)->setTimezone(config('filachat.timezone', 'app.timezone'));
+
+                                        if ($lastReadAt->isToday()) {
+                                            $date = $lastReadAt->format('g:i A');
+                                        } else {
+                                            $date = $lastReadAt->format('M d, Y g:i A');
+                                        }
+                                    @endphp
+                                    {{ $date }}
                                 </p>
                             </template>
                         </div>
