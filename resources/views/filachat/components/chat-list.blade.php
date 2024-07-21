@@ -62,7 +62,11 @@
                                 </div>
                                 <div class="flex items-center justify-between gap-1">
                                     <p class="text-sm text-gray-600 truncate dark:text-gray-400">
-                                        {{ $conversation->latest_message }}</p>
+                                        @if($conversation->is_sender)
+                                            <span class="text-primary-600 dark:text-primary-400 font-bold">You: </span>
+                                        @endif
+                                        {{ $conversation->latest_message }}
+                                    </p>
                                     @if ($conversation->unread_count > 0)
                                         <x-filament::badge>
                                             {{ $conversation->unread_count }}
