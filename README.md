@@ -36,6 +36,12 @@ php artisan filachat:install
 
 You can view the full content of the config file here: [config/filachat.php](https://github.com/199ocero/filachat/blob/main/config/filachat.php)
 
+Next, execute the following command to generate assets in your public folder.
+
+```bash
+php artisan filament:assets
+```
+
 > [!NOTE]  
 > This step is optional if you want to enable role restrictions. You only need to create an agent if you want to set up role-based chat support.
 
@@ -110,6 +116,27 @@ Then everytime you start your application in your local environment, you will ne
 
 ```bash
 php artisan reverb:start
+```
+
+When using file uploads, Livewire has a default file size limit of 12 MB. To change this limit, you need to publish the Livewire configuration file using the command `php artisan livewire:publish --config` and then adjust the `rule`.
+
+```php
+<?php
+
+return [
+    //...
+    'temporary_file_upload' => [
+        'rules' => 'max:20000',       // Example: ['file', 'mimes:png,jpg']  | Default: ['required', 'file', 'max:12288'] (12MB)
+    ],
+    //...
+];
+```
+
+You also need to adjust the `post_max_size` and `upload_max_filesize` settings in your `php.ini` file.
+
+```ini
+post_max_size = 20MB
+upload_max_filesize = 20MB
 ```
 
 ## Testing

@@ -103,7 +103,7 @@ class FilaChatServiceProvider extends PackageServiceProvider
     {
         return [
             // AlpineComponent::make('filachat', __DIR__ . '/../resources/dist/components/filachat.js'),
-            // Css::make('filachat-styles', __DIR__ . '/../resources/dist/filachat.css'),
+            Css::make('filachat-styles', __DIR__ . '/../resources/css/filachat.css')->loadedOnRequest(),
             // Js::make('filachat-scripts', __DIR__ . '/../resources/dist/filachat.js'),
         ];
     }

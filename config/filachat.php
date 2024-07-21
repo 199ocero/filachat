@@ -112,6 +112,68 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Upload Files
+    |--------------------------------------------------------------------------
+    |
+    | This option specifies the mime types and the type of disk to be used.
+    |
+    */
+    'disk' => 'public',
+    // this configuration is only use if the disk is S3
+    's3' => [
+        'directory' => 'attachments',
+        'visibility' => 'public',
+    ],
+    // these are the mime types that are allowed and you can remove if you want
+    'mime_types' => [
+        // audio
+        'audio/m4a',
+        'audio/wav',
+        'audio/mpeg',
+        'audio/ogg',
+        'audio/aac',
+        'audio/flac',
+        'audio/midi',
+
+        // images
+        'image/png',
+        'image/jpeg',
+        'image/jpg',
+        'image/gif',
+
+        // videos
+        'video/mp4',
+        'video/avi',
+        'video/quicktime',
+        'video/webm',
+        'video/x-matroska',
+        'video/x-flv',
+        'video/mpeg',
+
+        // documents
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'text/csv',
+        'text/plain',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/vnd.ms-powerpoint',
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    ],
+    /*
+    | If you want to change the maximum file size above 12mb you need to publish
+    | livewire config file and change the value for rules. Example below is from livewire config file.
+    | 'rules' => null, // Example: ['file', 'mimes:png,jpg']  | Default: ['required', 'file', 'max:12288'] (12MB)
+    */
+    'max_file_size' => 12288, // default livewire 12MB converted to kilobytes
+    'min_file_size' => 1,
+    // this option here is for number of files to be uploaded
+    'max_files' => 10,
+    'min_files' => 0,
+
+    /*
+    |--------------------------------------------------------------------------
     | Route Slug
     |--------------------------------------------------------------------------
     |

@@ -48,7 +48,14 @@ class FilaChatConversation extends Model
     {
         $latestMessage = $this->latestMessage();
 
-        return $latestMessage ? $latestMessage->message : null;
+        if ($latestMessage->message) {
+            return $latestMessage->message;
+        }
+
+        $attachmentCount = count($latestMessage->attachments);
+        $fileWord = $attachmentCount > 1 ? 'files' : 'file';
+
+        return 'Sent ' . $attachmentCount . ' ' . $fileWord . '.';
     }
 
     public function getUnreadCountAttribute()
@@ -83,6 +90,17 @@ class FilaChatConversation extends Model
         }
 
         return 'Unknown Name';
+    }
+
+    public function getIsSenderAttribute()
+    {
+        $latestMessage = $this->latestMessage();
+
+        if ($latestMessage->senderable_id === auth()->user()->id) {
+            return true;
+        }
+
+        return false;
     }
 
     protected function getName($user, $column)
