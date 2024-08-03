@@ -241,8 +241,8 @@ class ChatBox extends Component implements HasForms
                     broadcast(new FilaChatMessageReadEvent($this->selectedConversation->id));
                 }
             } else {
-                // This will be executed to the sender if the receiver is not in the selected conversation
-                if ($data['senderId'] === auth()->id()) {
+
+                if ($data['receiverId'] === auth()->id()) {
                     broadcast(new FilaChatMessageReceiverIsAwayEvent($data['conversationId']));
                 }
             }
