@@ -83,7 +83,7 @@ class FilaChatServiceProvider extends PackageServiceProvider
         }
 
         // Testing
-        Testable::mixin(new TestsFilaChat());
+        Testable::mixin(new TestsFilaChat);
 
         // Livewire
         Livewire::component('filachat-chat-list', ChatList::class);

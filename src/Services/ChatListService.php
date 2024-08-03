@@ -70,7 +70,7 @@ class ChatListService
 
     public static function make(): self
     {
-        return new self();
+        return new self;
     }
 
     public function getSearchResults(string $search): Collection
