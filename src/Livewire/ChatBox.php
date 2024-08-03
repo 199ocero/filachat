@@ -147,7 +147,7 @@ class ChatBox extends Component implements HasForms
                             return false;
                         })
                         ->required(function (Get $get) {
-                            if (count($get('attachments')) > 0) {
+                            if (is_array($get('attachments')) && count($get('attachments')) > 0) {
                                 return false;
                             }
 
