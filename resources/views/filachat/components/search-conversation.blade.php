@@ -8,7 +8,7 @@
     </x-slot>
 
     <x-filament::input.wrapper suffix-icon="heroicon-m-magnifying-glass">
-        <x-filament::input type="search" placeholder="{{__('Search any message...')}}" wire:model.live.debounce.500ms="search"/>
+        <x-filament::input type="search" placeholder="{{__('Search any messages...')}}" wire:model.live.debounce.500ms="search"/>
     </x-filament::input.wrapper>
 
     {{-- Dropdown results --}}
