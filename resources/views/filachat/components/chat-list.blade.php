@@ -5,7 +5,7 @@
 @props(['selectedConversation'])
 <div class="flex flex-col w-16 md:w-1/3 border-r border-gray-200 dark:border-gray-800/50">
     <div class="flex items-center h-20 gap-2 px-5 border-b dark:border-gray-800/60 border-gray-200/90">
-        <p class="text-lg font-bold hidden md:flex">Active Conversations</p>
+        <p class="text-lg font-bold hidden md:flex">{{__('Active Conversations')}}</p>
         <x-filament::badge>
             {{ $this->conversations->count() }}
         </x-filament::badge>
@@ -22,7 +22,7 @@
     <!-- Search Bar -->
     <div class="hidden md:block sticky top-0 z-10 h-20 p-5 border-b dark:border-gray-800/60 border-gray-200/90">
         <x-filament::input.wrapper suffix-icon="heroicon-m-magnifying-glass">
-            <x-filament::input type="text" placeholder="Search any messages..." x-on:click="$dispatch('open-modal', { id: 'search-conversation' })"/>
+            <x-filament::input type="text" placeholder="{{__('Search any messages...')}}" x-on:click="$dispatch('open-modal', { id: 'search-conversation' })"/>
         </x-filament::input.wrapper>
     </div>
      <div class="md:hidden block sticky top-0 z-10 p-1 border-b dark:border-gray-800/60 border-gray-200/90">
@@ -84,7 +84,7 @@
                     <x-filament::icon icon="heroicon-m-x-mark" class="w-6 h-6 text-gray-500 dark:text-gray-400" />
                 </div>
                 <p class="text-base text-gray-600 dark:text-gray-400 hidden md:block">
-                    No conversations yet
+                    {{__('No conversations yet')}}
                 </p>
             </div>
         @endif

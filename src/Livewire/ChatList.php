@@ -9,6 +9,9 @@ use Filament\Forms;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Enums\MaxWidth;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
 use JaOcero\FilaChat\Services\ChatListService;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -55,7 +58,7 @@ class ChatList extends Component implements HasActions, HasForms
         $isAgent = auth()->user()->isAgent();
 
         return Action::make($name)
-            ->label('Create Conversation')
+            ->label(__('Create Conversation'))
             ->hiddenLabel($isLabelHidden)
             ->icon('heroicon-o-chat-bubble-left-ellipsis')
             ->extraAttributes([
@@ -111,12 +114,12 @@ class ChatList extends Component implements HasActions, HasForms
                     ->placeholder(__('Write a message...'))
                     ->required()
                     ->autosize(),
-            ])
+            ])->modalSubmitActionLabel(__('Add'))
             ->modalWidth(MaxWidth::Large)
             ->action(fn (array $data) => ChatListService::make()->createConversation($data));
     }
 
-    public function render()
+    public function render(): Application|Factory|View|\Illuminate\View\View
     {
         return view('filachat::filachat.components.chat-list');
     }

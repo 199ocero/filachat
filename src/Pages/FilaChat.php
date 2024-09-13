@@ -39,9 +39,14 @@ class FilaChat extends Page
         return config('filachat.slug') . '/{id?}';
     }
 
+    public function getTitle(): string
+    {
+        return __(config('filachat.navigation_label'));
+    }
+
     public static function getNavigationLabel(): string
     {
-        return config('filachat.navigation_label');
+        return __(config('filachat.navigation_label'));
     }
 
     public static function getNavigationIcon(): string | Htmlable | null
