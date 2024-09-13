@@ -96,7 +96,7 @@ class ChatBox extends Component implements HasForms
                             ->hiddenLabel()
                             ->icon('heroicon-m-plus')
                             ->color('gray')
-                            ->tooltip('Upload Files')
+                            ->tooltip(__('Upload Files'))
                             ->action(fn () => $this->showUpload = ! $this->showUpload),
                     ])
                         ->grow(false),
@@ -107,16 +107,16 @@ class ChatBox extends Component implements HasForms
 
                                 // if both in the conversation are normal users
                                 if (! $isAgent && ! $isOtherPersonAgent) {
-                                    return 'You cannot write a message for other user...';
+                                    return __('You cannot write a message for other user...');
                                 }
 
                                 // if both in the conversation are agents
                                 if ($isAgent && $isOtherPersonAgent) {
-                                    return 'You cannot write a message for other agent...';
+                                    return __('You cannot write a message for other agent...');
                                 }
                             }
 
-                            return 'Write a message...';
+                            return __('Write a message...');
                         })
                         ->disabled(function () use ($isRoleEnabled, $isAgent, $isOtherPersonAgent) {
 
@@ -211,7 +211,7 @@ class ChatBox extends Component implements HasForms
             });
         } catch (\Exception $exception) {
             Notification::make()
-                ->title('Something went wrong')
+                ->title(__('Something went wrong'))
                 ->body($exception->getMessage())
                 ->danger()
                 ->persistent()
@@ -279,7 +279,7 @@ class ChatBox extends Component implements HasForms
             return Storage::disk(config('filachat.disk'))->download($path, $originalFileName);
         }
 
-        return abort(404, 'File not found');
+        return abort(404, __('File not found'));
     }
 
     public function render()

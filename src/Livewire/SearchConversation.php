@@ -17,13 +17,13 @@ class SearchConversation extends Component
 
     public Collection $messages;
 
-    public function mount()
+    public function mount(): void
     {
         $this->messages = collect();
     }
 
     #[On('close-modal')]
-    public function clearSearch()
+    public function clearSearch(): void
     {
         $this->search = '';
         $this->currentPage = 1;
@@ -31,20 +31,20 @@ class SearchConversation extends Component
         $this->loadMessages();
     }
 
-    public function loadMessages()
+    public function loadMessages(): void
     {
         $this->messages->push(...$this->paginator->getCollection());
 
         $this->currentPage = $this->currentPage + 1;
     }
 
-    public function loadMoreMessages()
+    public function loadMoreMessages(): void
     {
         $this->loadMessages();
     }
 
     #[Computed()]
-    public function paginator()
+    public function paginator(): \Illuminate\Contracts\Pagination\LengthAwarePaginator|LengthAwarePaginator
     {
         $searchTerm = trim($this->search);
 
@@ -71,7 +71,7 @@ class SearchConversation extends Component
         return $messages;
     }
 
-    public function updatedSearch()
+    public function updatedSearch(): void
     {
         $this->currentPage = 1;
         $this->messages = collect();

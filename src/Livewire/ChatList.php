@@ -66,49 +66,49 @@ class ChatList extends Component implements HasActions, HasForms
                     ->label(function () use ($isRoleEnabled, $isAgent) {
                         if ($isRoleEnabled) {
                             if ($isAgent) {
-                                return 'To User';
+                                return __('To User');
                             }
 
-                            return 'To Agent';
+                            return __('To Agent');
                         }
 
-                        return 'To';
+                        return __('To');
                     })
                     ->placeholder(function () use ($isRoleEnabled, $isAgent) {
                         if ($isRoleEnabled && ! $isAgent) {
-                            return 'Select Agent by Name or Email';
+                            return __('Select Agent by Name or Email');
                         }
 
-                        return 'Select User by Name or Email';
+                        return __('Select User by Name or Email');
                     })
                     ->searchPrompt(function () use ($isRoleEnabled, $isAgent) {
                         if ($isRoleEnabled && ! $isAgent) {
-                            return 'Search Agent by Name or Email';
+                            return __('Search Agent by Name or Email');
                         }
 
-                        return 'Search User by Name or Email';
+                        return __('Search User by Name or Email');
                     })
                     ->loadingMessage(function () use ($isRoleEnabled, $isAgent) {
                         if ($isRoleEnabled && ! $isAgent) {
-                            return 'Loading Agents...';
+                            return __('Loading Agents...');
                         }
 
-                        return 'Loading Users...';
+                        return __('Loading Users...');
                     })
                     ->noSearchResultsMessage(function () use ($isRoleEnabled, $isAgent) {
                         if ($isRoleEnabled && ! $isAgent) {
-                            return 'No Agents Found.';
+                            return __('No Agents Found.');
                         }
 
-                        return 'No Users Found.';
+                        return __('No Users Found.');
                     })
                     ->getSearchResultsUsing(fn (string $search): array => ChatListService::make()->getSearchResults($search)->toArray())
                     ->getOptionLabelUsing(fn ($value): ?string => ChatListService::make()->getOptionLabel($value))
                     ->searchable()
                     ->required(),
                 Forms\Components\Textarea::make('message')
-                    ->label('Your Message')
-                    ->placeholder('Write a message...')
+                    ->label(__('Your Message'))
+                    ->placeholder(__('Write a message...'))
                     ->required()
                     ->autosize(),
             ])
