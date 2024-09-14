@@ -119,7 +119,7 @@ class ChatList extends Component implements HasActions, HasForms
             ->action(fn (array $data) => ChatListService::make()->createConversation($data));
     }
 
-    public function render(): Application|Factory|View|\Illuminate\View\View
+    public function render(): Application | Factory | View | \Illuminate\View\View
     {
         return view('filachat::filachat.components.chat-list');
     }
