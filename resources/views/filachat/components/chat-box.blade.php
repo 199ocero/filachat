@@ -20,9 +20,9 @@ class="flex flex-col w-full md:w-2/3 overflow-hidden">
                 @endphp
                 <p class="text-sm text-gray-500 dark:text-gray-400">
                     @if ($isOtherPersonAgent)
-                        Agent
+                        {{__('Agent')}}
                     @else
-                        User
+                        {{__('User')}}
                     @endif
                 </p>
             </div>
@@ -194,7 +194,7 @@ class="flex flex-col w-full md:w-2/3 overflow-hidden">
                             </div>
                             <template x-if="markAsRead || @js($message->last_read_at) !== null">
                                 <p class="text-xs text-gray-600 dark:text-primary-200 text-end">
-                                    Seen at
+                                    {{__('Seen at')}}
                                     @php
                                         $lastReadAt = \Carbon\Carbon::parse($message->last_read_at)->setTimezone(config('filachat.timezone', 'app.timezone'));
 
@@ -214,7 +214,7 @@ class="flex flex-col w-full md:w-2/3 overflow-hidden">
             <!-- Repeat Message Item for multiple messages -->
             @if ($this->paginator->hasMorePages())
                 <div x-intersect="$wire.loadMoreMessages" class="h-4">
-                    <div class="w-full mb-6 text-center text-gray-500">Loading more messages...</div>
+                    <div class="w-full mb-6 text-center text-gray-500">{{__('Loading more messages...')}}</div>
                 </div>
             @endif
         </div>
@@ -240,7 +240,7 @@ class="flex flex-col w-full md:w-2/3 overflow-hidden">
                 <x-filament::icon icon="heroicon-m-x-mark" class="w-6 h-6 text-gray-500 dark:text-gray-400" />
             </div>
             <p class="text-base text-center text-gray-600 dark:text-gray-400">
-                No selected conversation
+                {{__('No selected conversation')}}
             </p>
         </div>
     @endif

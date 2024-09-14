@@ -225,5 +225,5 @@ return [
     | see supported timezones here: https://www.php.net/manual/en/timezones.php
     |
     */
-    'timezone' => 'UTC',
+    'timezone' => env('APP_TIMEZONE', 'UTC'),
 ];

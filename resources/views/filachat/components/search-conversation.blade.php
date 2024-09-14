@@ -4,11 +4,11 @@
 
 <x-filament::modal width="xl" id="search-conversation">
     <x-slot name="heading">
-        Search Messages in your Conversations
+        {{__('Search Messages in your Conversations')}}
     </x-slot>
 
     <x-filament::input.wrapper suffix-icon="heroicon-m-magnifying-glass">
-        <x-filament::input type="search" placeholder="Search any message..." wire:model.live.debounce.500ms="search"/>
+        <x-filament::input type="search" placeholder="{{__('Search any messages...')}}" wire:model.live.debounce.500ms="search"/>
     </x-filament::input.wrapper>
 
     {{-- Dropdown results --}}
@@ -40,7 +40,7 @@
                 <!-- Repeat Message Item for multiple messages -->
                 @if ($this->paginator->hasMorePages())
                     <div x-intersect="$wire.loadMoreMessages" class="h-4">
-                        <p class="w-full text-center text-gray-500">Loading more messages...</p>
+                        <p class="w-full text-center text-gray-500">{{__('Loading more messages...')}}</p>
                     </div>
                 @endif
             </ul>
@@ -49,7 +49,7 @@
         <div class="relative">
            <div class="absolute z-10 w-full bg-white border dark:divide-gray-800 border-gray-200 rounded-lg shadow dark:border-gray-800 dark:bg-gray-900 max-h-64 overflow-y-auto">
                 <p class="w-full p-3 text-sm text-center text-gray-500 dark:text-gray-400">
-                    No results found.
+                    {{__('No results found.')}}
                 </p>
             </div>
         </div>
