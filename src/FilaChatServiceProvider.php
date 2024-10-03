@@ -55,9 +55,10 @@ class FilaChatServiceProvider extends PackageServiceProvider
         }
     }
 
-    public function packageRegistered(): void {
+    public function packageRegistered(): void
+    {
         parent::packageRegistered();
-        $this->loadJsonTranslationsFrom(__DIR__.'/../resources/lang/');
+        $this->loadJsonTranslationsFrom(__DIR__ . '/../resources/lang/');
     }
 
     public function packageBooted(): void

@@ -44,7 +44,7 @@ class SearchConversation extends Component
     }
 
     #[Computed()]
-    public function paginator(): \Illuminate\Contracts\Pagination\LengthAwarePaginator|LengthAwarePaginator
+    public function paginator(): \Illuminate\Contracts\Pagination\LengthAwarePaginator | LengthAwarePaginator
     {
         $searchTerm = trim($this->search);
 
