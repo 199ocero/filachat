@@ -15,6 +15,34 @@ class FilaChat extends Page
 
     public $selectedConversation;
 
+    public static function getSlug(): string
+    {
+        return config('filachat.slug') . '/{id?}';
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __(config('filachat.navigation_label'));
+    }
+
+    public static function getNavigationBadgeColor(): string|array|null
+    {
+        $count = intval(self::getNavigationBadge());
+        return $count > 0 ? 'danger' : parent::getNavigationBadgeColor();
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return FilaChatMessage::query()
+            ->where('last_read_at', null)
+            ->where('receiverable_id', auth()->id())->count();
+    }
+
+    public static function getNavigationIcon(): string|Htmlable|null
+    {
+        return config('filachat.navigation_icon');
+    }
+
     public function mount(?int $id = null): void
     {
         if ($id) {
@@ -34,32 +62,17 @@ class FilaChat extends Page
         }
     }
 
-    public static function getSlug(): string
-    {
-        return config('filachat.slug') . '/{id?}';
-    }
-
     public function getTitle(): string
     {
         return __(config('filachat.navigation_label'));
     }
 
-    public static function getNavigationLabel(): string
-    {
-        return __(config('filachat.navigation_label'));
-    }
-
-    public static function getNavigationIcon(): string | Htmlable | null
-    {
-        return config('filachat.navigation_icon');
-    }
-
-    public function getMaxContentWidth(): MaxWidth | string | null
+    public function getMaxContentWidth(): MaxWidth|string|null
     {
         return config('filachat.max_content_width');
     }
 
-    public function getHeading(): string | Htmlable
+    public function getHeading(): string|Htmlable
     {
         return ''; // should be empty by default
     }
