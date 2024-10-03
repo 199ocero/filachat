@@ -33,9 +33,12 @@ class FilaChat extends Page
 
     public static function getNavigationBadge(): ?string
     {
-        return FilaChatMessage::query()
-            ->where('last_read_at', null)
-            ->where('receiverable_id', auth()->id())->count();
+        if (config('filachat.navigation_display_unread_messages_count')) {
+            return FilaChatMessage::query()
+                ->where('last_read_at', null)
+                ->where('receiverable_id', auth()->id())->count();
+        }
+        return parent::getNavigationBadge();
     }
 
     public static function getNavigationIcon(): string|Htmlable|null
