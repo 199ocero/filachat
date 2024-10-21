@@ -1,0 +1,25 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('filachat_group_members', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('group_id');
+            $table->unsignedBigInteger('member_id');
+            $table->softDeletes();
+            $table->timestamps();
+             $table->unique(['group_id', 'member_id']);
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('filachat_group_members');
+    }
+};

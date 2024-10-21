@@ -3,6 +3,7 @@
 namespace JaOcero\FilaChat\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
@@ -27,14 +28,9 @@ class FilaChatConversation extends Model
         return $this->morphTo();
     }
 
-    public function messages(): HasMany
+    public function group(): BelongsTo
     {
-        return $this->hasMany(FilaChatMessage::class, 'filachat_conversation_id', 'id');
-    }
-
-    public function latestMessage()
-    {
-        return $this->messages()->latest()->first();
+        return $this->belongsTo(FilaChatGroup::class, 'receiverable_id');
     }
 
     public function getLastMessageTimeAttribute()
@@ -42,6 +38,16 @@ class FilaChatConversation extends Model
         $latestMessage = $this->latestMessage();
 
         return $latestMessage ? $latestMessage->created_at : null;
+    }
+
+    public function latestMessage()
+    {
+        return $this->messages()->latest()->first();
+    }
+
+    public function messages(): HasMany
+    {
+        return $this->hasMany(FilaChatMessage::class, 'filachat_conversation_id', 'id');
     }
 
     public function getLatestMessageAttribute()
@@ -72,6 +78,11 @@ class FilaChatConversation extends Model
         return $this->getName($this->senderable, config('filachat.sender_name_column'));
     }
 
+    protected function getName($user, $column)
+    {
+        return $user ? $user->{$column} : 'Unknown Name';
+    }
+
     public function getReceiverNameAttribute()
     {
         return $this->getName($this->receiverable, config('filachat.receiver_name_column'));
@@ -79,17 +90,26 @@ class FilaChatConversation extends Model
 
     public function getOtherPersonNameAttribute()
     {
-        $authUserId = auth()->user()->id;
+        if ($this->isGroup()) {
+            return $this->getName($this->group, config('filachat.group_name_column'));
+        } else {
+            $authUserId = auth()->user()->id;
 
-        if ($this->senderable_id === $authUserId) {
-            return $this->getName($this->receiverable, config('filachat.receiver_name_column'));
-        }
+            if ($this->senderable_id === $authUserId) {
+                return $this->getName($this->receiverable, config('filachat.receiver_name_column'));
+            }
 
-        if ($this->receiverable_id === $authUserId) {
-            return $this->getName($this->senderable, config('filachat.sender_name_column'));
+            if ($this->receiverable_id === $authUserId) {
+                return $this->getName($this->senderable, config('filachat.sender_name_column'));
+            }
         }
 
         return 'Unknown Name';
+    }
+
+    public function isGroup()
+    {
+        return $this->receiverable_type === FilaChatGroup::class;
     }
 
     public function getIsSenderAttribute()
@@ -101,10 +121,5 @@ class FilaChatConversation extends Model
         }
 
         return false;
-    }
-
-    protected function getName($user, $column)
-    {
-        return $user ? $user->{$column} : 'Unknown Name';
     }
 }

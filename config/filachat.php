@@ -63,6 +63,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Group Member Model
+    |--------------------------------------------------------------------------
+    |
+    | This option specifies the group member model used in the chat system. You can
+    | customize this if you have a different model in your application.
+    |
+    */
+    'member_model' => \App\Models\User::class,
+
+    /*
+    |--------------------------------------------------------------------------
     | Agent Searchable Columns
     |--------------------------------------------------------------------------
     |
@@ -109,7 +120,17 @@ return [
     |
     */
     'receiver_name_column' => 'name',
-
+    /*
+    |--------------------------------------------------------------------------
+    | Group Name Column
+    |--------------------------------------------------------------------------
+    |
+    | This option specifies the column name for the groups name. You can
+    | customize this if your user model uses a different column name. This also
+    | use to search for groups in the chat.
+    |
+    */
+    'group_name_column' => 'name',
     /*
     |--------------------------------------------------------------------------
     | Upload Files

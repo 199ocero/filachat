@@ -2,13 +2,16 @@
 
 namespace JaOcero\FilaChat\Services;
 
+use Exception;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 use InvalidArgumentException;
 use JaOcero\FilaChat\Events\FilaChatMessageEvent;
 use JaOcero\FilaChat\Models\FilaChatConversation;
+use JaOcero\FilaChat\Models\FilaChatGroup;
 use JaOcero\FilaChat\Models\FilaChatMessage;
 use JaOcero\FilaChat\Pages\FilaChat;
 
@@ -40,19 +43,19 @@ class ChatListService
         $this->agentChatListDisplayColumn = config('filachat.agent_chat_list_display_column');
 
         // Check if the user model class exists
-        if (! class_exists($this->userModelClass)) {
+        if (!class_exists($this->userModelClass)) {
             throw new InvalidArgumentException('User model class ' . $this->userModelClass . ' not found');
         }
 
         // Check if the agent model class exists
-        if (! class_exists($this->agentModelClass)) {
+        if (!class_exists($this->agentModelClass)) {
             throw new InvalidArgumentException('Agent model class ' . $this->agentModelClass . ' not found');
         }
 
         // Validate that all specified columns exist in the user model
         foreach (config('filachat.user_searchable_columns') as $column) {
             $userTable = (new $this->userModelClass)->getTable();
-            if (! Schema::hasColumn($userTable, $column)) {
+            if (!Schema::hasColumn($userTable, $column)) {
                 throw new InvalidArgumentException('Column ' . $column . ' not found in ' . $userTable);
             }
         }
@@ -61,16 +64,11 @@ class ChatListService
         // Validate that all specified columns exist in the agent model
         foreach (config('filachat.agent_searchable_columns') as $column) {
             $agentTable = (new $this->agentModelClass)->getTable();
-            if (! Schema::hasColumn($agentTable, $column)) {
+            if (!Schema::hasColumn($agentTable, $column)) {
                 throw new InvalidArgumentException('Column ' . $column . ' not found in ' . $agentTable);
             }
         }
         $this->agentSearchableColumns = config('filachat.agent_searchable_columns');
-    }
-
-    public static function make(): self
-    {
-        return new self;
     }
 
     public function getSearchResults(string $search): Collection
@@ -162,13 +160,13 @@ class ChatListService
     public function getOptionLabel(string $value): ?string
     {
         if (preg_match('/^user_(\d+)$/', $value, $matches)) {
-            $id = (int) $matches[1];
+            $id = (int)$matches[1];
 
             return $this->userModelClass::find($id)->{$this->userChatListDisplayColumn};
         }
 
         if (preg_match('/^agent_(\d+)$/', $value, $matches)) {
-            $id = (int) $matches[1];
+            $id = (int)$matches[1];
 
             return $this->agentModelClass::find($id)->{$this->agentChatListDisplayColumn};
         }
@@ -176,46 +174,25 @@ class ChatListService
         return null;
     }
 
-    public function createConversation(array $data)
+    public function createConversation(array $data): void
     {
         try {
             DB::transaction(function () use ($data) {
-                $receiverableId = $data['receiverable_id'];
 
-                if (preg_match('/^user_(\d+)$/', $receiverableId, $matches)) {
-                    $receiverableType = $this->userModelClass;
-                    $receiverableId = (int) $matches[1];
-                }
+                if ($data['type'] === 'group') {
 
-                if (preg_match('/^agent_(\d+)$/', $receiverableId, $matches)) {
-                    $receiverableType = $this->agentModelClass;
-                    $receiverableId = (int) $matches[1];
-                }
+                    $group = FilaChatGroup::query()->create([
+                        'name' => $data['group_name'],
+                    ]);
 
-                $foundConversation = FilaChatConversation::query()
-                    ->where(function ($query) use ($receiverableId, $receiverableType) {
-                        $query->where(function ($query) {
-                            $query->where('senderable_id', auth()->id())
-                                ->where('senderable_type', auth()->user()::class);
-                        })
-                            ->orWhere(function ($query) use ($receiverableId, $receiverableType) {
-                                $query->where('senderable_id', $receiverableId)
-                                    ->where('senderable_type', $receiverableType);
-                            });
-                    })
-                    ->where(function ($query) use ($receiverableId, $receiverableType) {
-                        $query->where(function ($query) use ($receiverableId, $receiverableType) {
-                            $query->where('receiverable_id', $receiverableId)
-                                ->where('receiverable_type', $receiverableType);
-                        })
-                            ->orWhere(function ($query) {
-                                $query->where('receiverable_id', auth()->id())
-                                    ->where('receiverable_type', auth()->user()::class);
-                            });
-                    })
-                    ->first();
+                    foreach ($data['receiverable_id'] as $receiverableId) {
+                        $group->members()->create([
+                            'member_id' => Str::replace('agent_', '', Str::replace('user_', '', $receiverableId)),
+                        ]);
+                    }
 
-                if (! $foundConversation) {
+                    $receiverableId = $group->id;
+                    $receiverableType = FilaChatGroup::class;
                     $conversation = FilaChatConversation::query()->create([
                         'senderable_id' => auth()->id(),
                         'senderable_type' => auth()->user()::class,
@@ -223,7 +200,49 @@ class ChatListService
                         'receiverable_type' => $receiverableType,
                     ]);
                 } else {
-                    $conversation = $foundConversation;
+                    $receiverableId = $data['receiverable_id'];
+
+                    if (preg_match('/^user_(\d+)$/', $receiverableId, $matches)) {
+                        $receiverableType = $this->userModelClass;
+                        $receiverableId = (int)$matches[1];
+                    }
+
+                    if (preg_match('/^agent_(\d+)$/', $receiverableId, $matches)) {
+                        $receiverableType = $this->agentModelClass;
+                        $receiverableId = (int)$matches[1];
+                    }
+                    $foundConversation = FilaChatConversation::query()
+                        ->where(function ($query) use ($receiverableId, $receiverableType) {
+                            $query->where(function ($query) {
+                                $query->where('senderable_id', auth()->id())
+                                    ->where('senderable_type', auth()->user()::class);
+                            })
+                                ->orWhere(function ($query) use ($receiverableId, $receiverableType) {
+                                    $query->where('senderable_id', $receiverableId)
+                                        ->where('senderable_type', $receiverableType);
+                                });
+                        })
+                        ->where(function ($query) use ($receiverableId, $receiverableType) {
+                            $query->where(function ($query) use ($receiverableId, $receiverableType) {
+                                $query->where('receiverable_id', $receiverableId)
+                                    ->where('receiverable_type', $receiverableType);
+                            })
+                                ->orWhere(function ($query) {
+                                    $query->where('receiverable_id', auth()->id())
+                                        ->where('receiverable_type', auth()->user()::class);
+                                });
+                        })
+                        ->first();
+                    if (!$foundConversation) {
+                        $conversation = FilaChatConversation::query()->create([
+                            'senderable_id' => auth()->id(),
+                            'senderable_type' => auth()->user()::class,
+                            'receiverable_id' => $receiverableId,
+                            'receiverable_type' => $receiverableType,
+                        ]);
+                    } else {
+                        $conversation = $foundConversation;
+                    }
                 }
 
                 $message = FilaChatMessage::query()->create([
@@ -239,16 +258,27 @@ class ChatListService
 
                 $conversation->save();
 
-                broadcast(new FilaChatMessageEvent(
-                    $conversation->id,
-                    $message->id,
-                    $receiverableId,
-                    auth()->id(),
-                ));
+                if ($data['type'] === 'group') {
+                    foreach ($group->members as $member) {
+                        broadcast(new FilaChatMessageEvent(
+                            $conversation->id,
+                            $message->id,
+                            $member->id,
+                            auth()->id(),
+                        ));
+                    }
+                } else {
+                    broadcast(new FilaChatMessageEvent(
+                        $conversation->id,
+                        $message->id,
+                        $receiverableId,
+                        auth()->id(),
+                    ));
+                }
 
                 return redirect(FilaChat::getUrl(tenant: filament()->getTenant()) . '/' . $conversation->id);
             });
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             Notification::make()
                 ->title('Something went wrong')
                 ->body($exception->getMessage())
@@ -256,5 +286,10 @@ class ChatListService
                 ->persistent()
                 ->send();
         }
+    }
+
+    public static function make(): self
+    {
+        return new self;
     }
 }
