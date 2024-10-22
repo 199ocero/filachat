@@ -4,6 +4,7 @@ namespace JaOcero\FilaChat\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class FilaChatGroup extends Model
 {
@@ -18,6 +19,12 @@ class FilaChatGroup extends Model
     public function isAgent(): bool
     {
         return false;
+    }
+
+    public function conversation(): HasOne
+    {
+        return $this->hasOne(FilaChatConversation::class, 'receiverable_id', 'id')
+            ->where('receiverable_type', FilaChatGroup::class);
     }
 
 
