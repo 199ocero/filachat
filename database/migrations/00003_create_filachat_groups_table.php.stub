@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('filachat_groups', function (Blueprint $table) {
             $table->id();
             $table->text('name');
+            $table->unsignedBigInteger('created_by');
             $table->softDeletes();
             $table->timestamps();
         });

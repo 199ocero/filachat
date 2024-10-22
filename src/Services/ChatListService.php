@@ -179,9 +179,13 @@ class ChatListService
         try {
             DB::transaction(function () use ($data) {
 
+                $senderableId = auth()->id();
+                $senderableType = auth()->user()::class;
+
                 if ($data['type'] === 'group') {
 
                     $group = FilaChatGroup::query()->create([
+                        'created_by' => $senderableId,
                         'name' => $data['group_name'],
                     ]);
 
@@ -194,7 +198,7 @@ class ChatListService
                     $receiverableId = $group->id;
                     $receiverableType = FilaChatGroup::class;
                     $conversation = FilaChatConversation::query()->create([
-                        'senderable_id' => auth()->id(),
+                        'senderable_id' => $senderableId,
                         'senderable_type' => auth()->user()::class,
                         'receiverable_id' => $receiverableId,
                         'receiverable_type' => $receiverableType,
@@ -212,31 +216,31 @@ class ChatListService
                         $receiverableId = (int)$matches[1];
                     }
                     $foundConversation = FilaChatConversation::query()
-                        ->where(function ($query) use ($receiverableId, $receiverableType) {
-                            $query->where(function ($query) {
-                                $query->where('senderable_id', auth()->id())
-                                    ->where('senderable_type', auth()->user()::class);
+                        ->where(function ($query) use ($receiverableId, $receiverableType, $senderableId, $senderableType) {
+                            $query->where(function ($query) use ($senderableId, $senderableType) {
+                                $query->where('senderable_id', $senderableId)
+                                    ->where('senderable_type', $senderableType);
                             })
                                 ->orWhere(function ($query) use ($receiverableId, $receiverableType) {
                                     $query->where('senderable_id', $receiverableId)
                                         ->where('senderable_type', $receiverableType);
                                 });
                         })
-                        ->where(function ($query) use ($receiverableId, $receiverableType) {
+                        ->where(function ($query) use ($receiverableId, $receiverableType, $senderableId, $senderableType) {
                             $query->where(function ($query) use ($receiverableId, $receiverableType) {
                                 $query->where('receiverable_id', $receiverableId)
                                     ->where('receiverable_type', $receiverableType);
                             })
-                                ->orWhere(function ($query) {
-                                    $query->where('receiverable_id', auth()->id())
-                                        ->where('receiverable_type', auth()->user()::class);
+                                ->orWhere(function ($query) use ($senderableId, $senderableType) {
+                                    $query->where('receiverable_id', $senderableId)
+                                        ->where('receiverable_type', $senderableType);
                                 });
                         })
                         ->first();
                     if (!$foundConversation) {
                         $conversation = FilaChatConversation::query()->create([
-                            'senderable_id' => auth()->id(),
-                            'senderable_type' => auth()->user()::class,
+                            'senderable_id' => $senderableId,
+                            'senderable_type' => $senderableType,
                             'receiverable_id' => $receiverableId,
                             'receiverable_type' => $receiverableType,
                         ]);
@@ -247,8 +251,8 @@ class ChatListService
 
                 $message = FilaChatMessage::query()->create([
                     'filachat_conversation_id' => $conversation->id,
-                    'senderable_id' => auth()->id(),
-                    'senderable_type' => auth()->user()::class,
+                    'senderable_id' => $senderableId,
+                    'senderable_type' => $senderableType,
                     'receiverable_id' => $receiverableId,
                     'receiverable_type' => $receiverableType,
                     'message' => $data['message'],
@@ -264,7 +268,7 @@ class ChatListService
                             $conversation->id,
                             $message->id,
                             $member->id,
-                            auth()->id(),
+                            $senderableId,
                         ));
                     }
                 } else {
@@ -272,7 +276,7 @@ class ChatListService
                         $conversation->id,
                         $message->id,
                         $receiverableId,
-                        auth()->id(),
+                        $senderableId,
                     ));
                 }
 
