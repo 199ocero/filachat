@@ -11,6 +11,7 @@ class FilaChatGroup extends Model
 
     protected $fillable = [
         'name',
+        'created_by',
     ];
 
 

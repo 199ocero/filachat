@@ -64,7 +64,7 @@ class FilaChatConversation extends Model
         return 'Sent ' . $attachmentCount . ' ' . $fileWord . '.';
     }
 
-    public function getUnreadCountAttribute()
+    public function getUnreadCountAttribute(): int
     {
         return $this->messages()
             ->whereNull('last_read_at')
@@ -107,12 +107,12 @@ class FilaChatConversation extends Model
         return 'Unknown Name';
     }
 
-    public function isGroup()
+    public function isGroup(): bool
     {
         return $this->receiverable_type === FilaChatGroup::class;
     }
 
-    public function getIsSenderAttribute()
+    public function getIsSenderAttribute(): bool
     {
         $latestMessage = $this->latestMessage();
 
