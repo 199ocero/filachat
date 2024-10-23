@@ -186,6 +186,7 @@ class ChatListService
 
                     $group = FilaChatGroup::query()->create([
                         'created_by' => $senderableId,
+                        'owner_id' => $senderableId,
                         'name' => $data['group_name'],
                     ]);
 

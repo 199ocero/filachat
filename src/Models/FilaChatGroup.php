@@ -5,14 +5,18 @@ namespace JaOcero\FilaChat\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FilaChatGroup extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'filachat_groups';
 
     protected $fillable = [
         'name',
         'created_by',
+        'owner_id',
     ];
 
 

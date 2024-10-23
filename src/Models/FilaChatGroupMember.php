@@ -4,9 +4,12 @@ namespace JaOcero\FilaChat\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FilaChatGroupMember extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'filachat_group_members';
 
     protected $fillable = [
