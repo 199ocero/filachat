@@ -25,7 +25,22 @@ class FilaChat extends Page
         return __(config('filachat.navigation_label'));
     }
 
-    public static function getNavigationBadgeColor(): string | array | null
+    public static function getNavigationGroup(): ?string
+    {
+        return __(config('filachat.navigation_group'));
+    }
+
+    public static function getNavigationSort(): ?int
+    {
+        return config('filachat.navigation_sort');
+    }
+
+    public static function getCluster(): ?string
+    {
+        return config('filachat.cluster');
+    }
+
+    public static function getNavigationBadgeColor(): string|array|null
     {
         $count = intval(self::getNavigationBadge());
 
@@ -43,7 +58,7 @@ class FilaChat extends Page
         return parent::getNavigationBadge();
     }
 
-    public static function getNavigationIcon(): string | Htmlable | null
+    public static function getNavigationIcon(): string|Htmlable|null
     {
         return config('filachat.navigation_icon');
     }
@@ -72,12 +87,12 @@ class FilaChat extends Page
         return __(config('filachat.navigation_label'));
     }
 
-    public function getMaxContentWidth(): MaxWidth | string | null
+    public function getMaxContentWidth(): MaxWidth|string|null
     {
         return config('filachat.max_content_width');
     }
 
-    public function getHeading(): string | Htmlable
+    public function getHeading(): string|Htmlable
     {
         return ''; // should be empty by default
     }

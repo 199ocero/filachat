@@ -213,6 +213,11 @@ return [
     */
     'navigation_label' => 'FilaChat',
 
+
+    'navigation_group' => null,
+    'navigation_sort' => null,
+    'cluster' => null,
+
     /*
     |--------------------------------------------------------------------------
     | Navigation Badge
