@@ -28,5 +28,10 @@
     "Search any messages...": "البحث في أي رسائل...",
     "No conversations yet": "لا توجد محادثات حتى الآن",
     "Search Messages in your Conversations": "ابحث في الرسائل في محادثاتك",
-    "No results found.": "لم يتم العثور على نتائج."
+    "No results found.": "لم يتم العثور على نتائج.",
+    "Group chat": "محادثة جماعية",
+    "One-on-one conversation": "محادثة فردية",
+    "Conversion type": "نوع المحادثة",
+    "Group members": "إعضاء المجموعة",
+    "Group name": "إسم المجموعة"
 }

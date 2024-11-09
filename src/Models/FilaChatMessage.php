@@ -49,6 +49,11 @@ class FilaChatMessage extends Model
         return $this->belongsTo(FilaChatConversation::class, 'filachat_conversation_id', 'id');
     }
 
+    public function repliedToMessage(): BelongsTo
+    {
+        return $this->belongsTo(FilaChatMessage::class, 'reply_to_message_id', 'id');
+    }
+
     public function senderable(): MorphTo
     {
         return $this->morphTo();

@@ -1,14 +1,14 @@
 @props(['selectedConversation'])
 <!-- Right Section (Chat Conversation) -->
 <div
-x-load-css="[@js(\Filament\Support\Facades\FilamentAsset::getStyleHref('filachat-styles', package: 'jaocero/filachat'))]"
-class="flex flex-col w-full md:w-2/3 overflow-hidden">
+        x-load-css="[@js(\Filament\Support\Facades\FilamentAsset::getStyleHref('filachat-styles', package: 'jaocero/filachat'))]"
+        class="flex flex-col w-full md:w-2/3 overflow-hidden">
     @if ($selectedConversation)
         <!-- Chat Header -->
         <div class="flex items-center h-20 gap-2 p-5 border-b dark:border-gray-800/60 border-gray-200/90">
             <x-filament::avatar
-                src="https://ui-avatars.com/api/?name={{ urlencode($selectedConversation->other_person_name) }}"
-                alt="Profile" size="lg" />
+                    src="https://ui-avatars.com/api/?name={{ urlencode($selectedConversation->other_person_name) }}"
+                    alt="Profile" size="lg" />
             <div class="flex flex-col">
                 <p class="text-base font-bold">{{ $selectedConversation->other_person_name }}</p>
                 @php
@@ -19,10 +19,14 @@ class="flex flex-col w-full md:w-2/3 overflow-hidden">
                     }
                 @endphp
                 <p class="text-sm text-gray-500 dark:text-gray-400">
-                    @if ($isOtherPersonAgent)
-                        {{__('Agent')}}
+                    @if($selectedConversation->isGroup())
+                        {{__('Group')}}
                     @else
-                        {{__('User')}}
+                        @if ($isOtherPersonAgent)
+                            {{__('Agent')}}
+                        @else
+                            {{__('User')}}
+                        @endif
                     @endif
                 </p>
             </div>
@@ -44,11 +48,11 @@ class="flex flex-col w-full md:w-2/3 overflow-hidden">
                 });
 
             " id="chatContainer"
-            class="flex flex-col-reverse flex-1 p-5 overflow-y-auto">
+             class="flex flex-col-reverse flex-1 p-5 overflow-y-auto">
             <!-- Message Item -->
             @foreach ($conversationMessages as $index => $message)
                 <div wire:key="{{ $message->id }}">
-                  @php
+                    @php
                         $nextMessage = $conversationMessages[$index + 1] ?? null;
                         $nextMessageDate = $nextMessage ? \Carbon\Carbon::parse($nextMessage->created_at)->setTimezone(config('filachat.timezone', 'app.timezone'))->format('Y-m-d') : null;
                         $currentMessageDate = \Carbon\Carbon::parse($message->created_at)->setTimezone(config('filachat.timezone', 'app.timezone'))->format('Y-m-d');
@@ -75,12 +79,12 @@ class="flex flex-col w-full md:w-2/3 overflow-hidden">
                             // Show avatar if the current message is the first in a consecutive sequence or a new day
                             $showAvatar = $message->senderable_id !== auth()->user()->id && ($message->senderable_id !== $previousSenderId || $currentMessageDate !== $previousMessageDate);
                         @endphp
-                        <!-- Left Side -->
+                                <!-- Left Side -->
                         <div class="flex items-end gap-2 mb-2">
                             @if ($showAvatar)
                                 <x-filament::avatar
-                                    src="https://ui-avatars.com/api/?name={{ urlencode($selectedConversation->other_person_name) }}"
-                                    alt="Profile" size="sm" />
+                                        src="https://ui-avatars.com/api/?name={{ urlencode($selectedConversation->sender_name) }}"
+                                        alt="Profile" size="sm" />
                             @else
                                 <div class="w-6 h-6"></div> <!-- Placeholder to align the messages properly -->
                             @endif
@@ -93,7 +97,8 @@ class="flex flex-col w-full md:w-2/3 overflow-hidden">
                                         @php
                                             $originalFileName = $this->getOriginalFileName($attachment, $message->original_attachment_file_names);
                                         @endphp
-                                        <div wire:click="downloadFile('{{ $attachment }}', '{{ $originalFileName }}')" class="flex items-center gap-1 bg-gray-50 dark:bg-gray-700 p-2 my-2 rounded-lg group cursor-pointer">
+                                        <div wire:click="downloadFile('{{ $attachment }}', '{{ $originalFileName }}')"
+                                             class="flex items-center gap-1 bg-gray-50 dark:bg-gray-700 p-2 my-2 rounded-lg group cursor-pointer">
                                             <div class="p-2 text-white bg-gray-500 dark:bg-gray-600 rounded-full group-hover:bg-gray-700 group-hover:dark:bg-gray-800">
                                                 @php
                                                     $icon = 'heroicon-m-x-mark';
@@ -149,7 +154,8 @@ class="flex flex-col w-full md:w-2/3 overflow-hidden">
                                         @php
                                             $originalFileName = $this->getOriginalFileName($attachment, $message->original_attachment_file_names);
                                         @endphp
-                                        <div wire:click="downloadFile('{{ $attachment }}', '{{ $originalFileName }}')" class="flex items-center gap-1 bg-primary-500 dark:bg-primary-800 p-2 my-2 rounded-lg group cursor-pointer">
+                                        <div wire:click="downloadFile('{{ $attachment }}', '{{ $originalFileName }}')"
+                                             class="flex items-center gap-1 bg-primary-500 dark:bg-primary-800 p-2 my-2 rounded-lg group cursor-pointer">
                                             <div class="p-2 text-white bg-primary-600 rounded-full group-hover:bg-primary-700 group-hover:dark:bg-primary-900">
                                                 @php
                                                     $icon = 'heroicon-m-x-circle';
@@ -228,7 +234,8 @@ class="flex flex-col w-full md:w-2/3 overflow-hidden">
                     {{ $this->form }}
                 </div>
                 <div class="p-1">
-                    <x-filament::button type="submit" icon="heroicon-m-paper-airplane" class="!gap-0"></x-filament::button>
+                    <x-filament::button type="submit" icon="heroicon-m-paper-airplane"
+                                        class="!gap-0"></x-filament::button>
                 </div>
             </form>
 

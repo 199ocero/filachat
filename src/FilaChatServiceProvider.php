@@ -2,10 +2,8 @@
 
 namespace JaOcero\FilaChat;
 
-use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Asset;
 use Filament\Support\Assets\Css;
-use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Filesystem\Filesystem;
@@ -55,6 +53,31 @@ class FilaChatServiceProvider extends PackageServiceProvider
         }
     }
 
+    /**
+     * @return array<class-string>
+     */
+    protected function getCommands(): array
+    {
+        return [
+            FilaChatCommand::class,
+            FilaChatCreateAgentCommand::class,
+        ];
+    }
+
+    /**
+     * @return array<string>
+     */
+    protected function getMigrations(): array
+    {
+        return [
+            '00001_create_filachat_agents_table',
+            '00002_create_filachat_conversations_table',
+            '00003_create_filachat_messages_table',
+            '00003_create_filachat_groups_table',
+            '00003_create_filachat_group_members_table',
+        ];
+    }
+
     public function packageRegistered(): void
     {
         parent::packageRegistered();
@@ -95,11 +118,6 @@ class FilaChatServiceProvider extends PackageServiceProvider
         Livewire::component('filachat-search-conversation', SearchConversation::class);
     }
 
-    protected function getAssetPackageName(): ?string
-    {
-        return 'jaocero/filachat';
-    }
-
     /**
      * @return array<Asset>
      */
@@ -112,15 +130,17 @@ class FilaChatServiceProvider extends PackageServiceProvider
         ];
     }
 
-    /**
-     * @return array<class-string>
-     */
-    protected function getCommands(): array
+    protected function getAssetPackageName(): ?string
     {
-        return [
-            FilaChatCommand::class,
-            FilaChatCreateAgentCommand::class,
-        ];
+        return 'jaocero/filachat';
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function getScriptData(): array
+    {
+        return [];
     }
 
     /**
@@ -137,25 +157,5 @@ class FilaChatServiceProvider extends PackageServiceProvider
     protected function getRoutes(): array
     {
         return [];
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    protected function getScriptData(): array
-    {
-        return [];
-    }
-
-    /**
-     * @return array<string>
-     */
-    protected function getMigrations(): array
-    {
-        return [
-            '00001_create_filachat_agents_table',
-            '00002_create_filachat_conversations_table',
-            '00003_create_filachat_messages_table',
-        ];
     }
 }

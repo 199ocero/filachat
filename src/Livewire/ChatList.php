@@ -46,11 +46,6 @@ class ChatList extends Component implements HasActions, HasForms
         return $this->createConversationAction(name: 'createConversationMediumSize', isLabelHidden: false);
     }
 
-    public function createConversationSmallSizeAction(): Action
-    {
-        return $this->createConversationAction(name: 'createConversationSmallSizeAction', isLabelHidden: true);
-    }
-
     public function createConversationAction(string $name, bool $isLabelHidden = false): Action
     {
         $isRoleEnabled = config('filachat.enable_roles');
@@ -65,8 +60,30 @@ class ChatList extends Component implements HasActions, HasForms
                 'class' => 'w-full',
             ])
             ->form([
+                Forms\Components\Radio::make('type')
+                    ->options([
+                        'personal' => __('One-on-one conversation'),
+                        'group' => __('Group chat'),
+                    ])
+                    ->reactive()
+                    ->label(__('Conversion type')),
+                Forms\Components\TextInput::make('group_name')
+                    ->required()
+                    ->visible(function (Forms\Get $get) {
+                        return $get('type') === 'group';
+                    })
+                    ->label(__('Group name')),
                 Forms\Components\Select::make('receiverable_id')
-                    ->label(function () use ($isRoleEnabled, $isAgent) {
+                    ->visible(function (Forms\Get $get) {
+                        return $get('type') != null;
+                    })
+                    ->multiple(fn(Forms\Get $get) => $get('type') == 'group')
+                    ->label(function (Forms\Get $get) use ($isRoleEnabled, $isAgent) {
+
+                        if ($get('type') === 'group') {
+                            return __('Group members');
+                        }
+
                         if ($isRoleEnabled) {
                             if ($isAgent) {
                                 return __('To User');
@@ -78,35 +95,35 @@ class ChatList extends Component implements HasActions, HasForms
                         return __('To');
                     })
                     ->placeholder(function () use ($isRoleEnabled, $isAgent) {
-                        if ($isRoleEnabled && ! $isAgent) {
+                        if ($isRoleEnabled && !$isAgent) {
                             return __('Select Agent by Name or Email');
                         }
 
                         return __('Select User by Name or Email');
                     })
                     ->searchPrompt(function () use ($isRoleEnabled, $isAgent) {
-                        if ($isRoleEnabled && ! $isAgent) {
+                        if ($isRoleEnabled && !$isAgent) {
                             return __('Search Agent by Name or Email');
                         }
 
                         return __('Search User by Name or Email');
                     })
                     ->loadingMessage(function () use ($isRoleEnabled, $isAgent) {
-                        if ($isRoleEnabled && ! $isAgent) {
+                        if ($isRoleEnabled && !$isAgent) {
                             return __('Loading Agents...');
                         }
 
                         return __('Loading Users...');
                     })
                     ->noSearchResultsMessage(function () use ($isRoleEnabled, $isAgent) {
-                        if ($isRoleEnabled && ! $isAgent) {
+                        if ($isRoleEnabled && !$isAgent) {
                             return __('No Agents Found.');
                         }
 
                         return __('No Users Found.');
                     })
-                    ->getSearchResultsUsing(fn (string $search): array => ChatListService::make()->getSearchResults($search)->toArray())
-                    ->getOptionLabelUsing(fn ($value): ?string => ChatListService::make()->getOptionLabel($value))
+                    ->getSearchResultsUsing(fn(string $search): array => ChatListService::make()->getSearchResults($search)->toArray())
+                    ->getOptionLabelUsing(fn($value): ?string => ChatListService::make()->getOptionLabel($value))
                     ->searchable()
                     ->required(),
                 Forms\Components\Textarea::make('message')
@@ -116,10 +133,15 @@ class ChatList extends Component implements HasActions, HasForms
                     ->autosize(),
             ])->modalSubmitActionLabel(__('Add'))
             ->modalWidth(MaxWidth::Large)
-            ->action(fn (array $data) => ChatListService::make()->createConversation($data));
+            ->action(fn(array $data) => ChatListService::make()->createConversation($data));
     }
 
-    public function render(): Application | Factory | View | \Illuminate\View\View
+    public function createConversationSmallSizeAction(): Action
+    {
+        return $this->createConversationAction(name: 'createConversationSmallSizeAction', isLabelHidden: true);
+    }
+
+    public function render(): Application|Factory|View|\Illuminate\View\View
     {
         return view('filachat::filachat.components.chat-list');
     }
