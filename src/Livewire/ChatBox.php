@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Storage;
 use JaOcero\FilaChat\Events\FilaChatMessageEvent;
 use JaOcero\FilaChat\Events\FilaChatMessageReadEvent;
 use JaOcero\FilaChat\Events\FilaChatMessageReceiverIsAwayEvent;
+use JaOcero\FilaChat\Events\FilaChatUserTypingEvent;
 use JaOcero\FilaChat\Models\FilaChatMessage;
 use JaOcero\FilaChat\Traits\CanGetOriginalFileName;
 use JaOcero\FilaChat\Traits\CanValidateAudio;
@@ -102,6 +103,19 @@ class ChatBox extends Component implements HasForms
                         ->grow(false),
                     Forms\Components\Textarea::make('message')
                         ->hiddenLabel()
+                        ->live(debounce: 500)
+                        ->afterStateUpdated(function (?string $old, ?string $state) {
+                            // check and set the receiver id
+                            if (auth()->id() === $this->selectedConversation->receiverable_id) {
+                                $receiverableId = $this->selectedConversation->senderable_id;
+                            } else {
+                                $receiverableId = $this->selectedConversation->receiverable_id;
+                            }
+                            // check if the user is typing by comparing the old state and the new state and broadcast the typing event
+                            if ($state != $old) {
+                                broadcast(new FilaChatUserTypingEvent($this->selectedConversation->id, true, $receiverableId));
+                            }
+                        })
                         ->placeholder(function () use ($isRoleEnabled, $isAgent, $isOtherPersonAgent) {
                             if ($isRoleEnabled) {
 
