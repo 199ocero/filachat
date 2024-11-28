@@ -48,6 +48,11 @@ class FilaChat extends Page
         return config('filachat.navigation_icon');
     }
 
+    public static function getNavigationSort(): ?int
+    {
+        return config('filachat.navigation_sort');
+    }
+
     public function mount(?int $id = null): void
     {
         if ($id) {

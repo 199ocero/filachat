@@ -1,8 +1,8 @@
 @props(['selectedConversation'])
 <!-- Right Section (Chat Conversation) -->
 <div
-x-load-css="[@js(\Filament\Support\Facades\FilamentAsset::getStyleHref('filachat-styles', package: 'jaocero/filachat'))]"
-class="flex flex-col w-full md:w-2/3 overflow-hidden">
+    x-load-css="[@js(\Filament\Support\Facades\FilamentAsset::getStyleHref('filachat-styles', package: 'jaocero/filachat'))]"
+    class="flex flex-col w-full md:w-2/3 overflow-hidden">
     @if ($selectedConversation)
         <!-- Chat Header -->
         <div class="flex items-center h-20 gap-2 p-5 border-b dark:border-gray-800/60 border-gray-200/90">
@@ -29,26 +29,54 @@ class="flex flex-col w-full md:w-2/3 overflow-hidden">
         </div>
 
         <!-- Chat Messages -->
-        <div x-data="{ markAsRead: false }" x-init="
+        <div x-data="{ markAsRead: false, isTyping:false }" x-init="
 
-            Echo.channel('filachat')
-                .listen('.JaOcero\\FilaChat\\Events\\FilaChatMessageReadEvent', e => {
-                    if (e.conversationId == @js($selectedConversation->id)) {
-                        markAsRead = true;
+            const channel = Echo.channel('filachat');
+
+            channel.listen('.JaOcero\\FilaChat\\Events\\FilaChatMessageReadEvent', e => {
+                if (e.conversationId == @js($selectedConversation->id)) {
+                    markAsRead = true;
+                }
+            });
+            channel.listen('.JaOcero\\FilaChat\\Events\\FilaChatMessageReceiverIsAwayEvent', e => {
+                if (e.conversationId == @js($selectedConversation->id)) {
+                    markAsRead = false;
+                }
+            });
+
+            // listen to typing event and reset the typing status after 3 seconds
+            channel.listen('.JaOcero\\FilaChat\\Events\\FilaChatUserTypingEvent', e => {
+                if (e.conversationId == @js($selectedConversation->id)) {
+                    if(e.receiverId == @js(auth()->id())) {
+                        isTyping = true;
+                           setTimeout(() => {
+                                isTyping = false;
+                            }, 3000);
                     }
-                })
-                .listen('.JaOcero\\FilaChat\\Events\\FilaChatMessageReceiverIsAwayEvent', e => {
-                    if (e.conversationId == @js($selectedConversation->id)) {
-                        markAsRead = false;
-                    }
-                });
+                }
+            });
 
             " id="chatContainer"
-            class="flex flex-col-reverse flex-1 p-5 overflow-y-auto">
+             class="flex flex-col-reverse flex-1 p-5 overflow-y-auto">
+            <!-- add the typing indicator to the bottom of the chat box -->
+            <div class="flex items-end gap-2 mb-2" x-show="isTyping">
+                <x-filament::avatar
+                    src="https://ui-avatars.com/api/?name={{ urlencode($selectedConversation->other_person_name) }}"
+                    alt="Profile" size="sm" />
+                <div class="max-w-md p-2 bg-gray-200 rounded-t-xl rounded-br-xl dark:bg-gray-800" >
+                    <p class="text-sm">
+                        <svg height="40" width="40" class="loader">
+                            <circle class="dot" cx="10" cy="20" r="3" style="fill:grey;" />
+                            <circle class="dot" cx="20" cy="20" r="3" style="fill:grey;" />
+                            <circle class="dot" cx="30" cy="20" r="3" style="fill:grey;" />
+                        </svg>
+                    </p>
+                </div>
+            </div>
             <!-- Message Item -->
             @foreach ($conversationMessages as $index => $message)
                 <div wire:key="{{ $message->id }}">
-                  @php
+                    @php
                         $nextMessage = $conversationMessages[$index + 1] ?? null;
                         $nextMessageDate = $nextMessage ? \Carbon\Carbon::parse($nextMessage->created_at)->setTimezone(config('filachat.timezone', 'app.timezone'))->format('Y-m-d') : null;
                         $currentMessageDate = \Carbon\Carbon::parse($message->created_at)->setTimezone(config('filachat.timezone', 'app.timezone'))->format('Y-m-d');
@@ -75,7 +103,7 @@ class="flex flex-col w-full md:w-2/3 overflow-hidden">
                             // Show avatar if the current message is the first in a consecutive sequence or a new day
                             $showAvatar = $message->senderable_id !== auth()->user()->id && ($message->senderable_id !== $previousSenderId || $currentMessageDate !== $previousMessageDate);
                         @endphp
-                        <!-- Left Side -->
+                            <!-- Left Side -->
                         <div class="flex items-end gap-2 mb-2">
                             @if ($showAvatar)
                                 <x-filament::avatar
@@ -217,6 +245,7 @@ class="flex flex-col w-full md:w-2/3 overflow-hidden">
                     <div class="w-full mb-6 text-center text-gray-500">{{__('Loading more messages...')}}</div>
                 </div>
             @endif
+
         </div>
 
 
@@ -247,18 +276,18 @@ class="flex flex-col w-full md:w-2/3 overflow-hidden">
 
 </div>
 @script
-    <script>
-        $wire.on('chat-box-scroll-to-bottom', () => {
+<script>
+    $wire.on('chat-box-scroll-to-bottom', () => {
 
-            chatContainer = document.getElementById('chatContainer');
-            chatContainer.scrollTo({
-                top: chatContainer.scrollHeight,
-                behavior: 'smooth',
-            });
-
-            setTimeout(() => {
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-            }, 400);
+        chatContainer = document.getElementById('chatContainer');
+        chatContainer.scrollTo({
+            top: chatContainer.scrollHeight,
+            behavior: 'smooth',
         });
-    </script>
+
+        setTimeout(() => {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }, 400);
+    });
+</script>
 @endscript

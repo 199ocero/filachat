@@ -214,6 +214,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Navigation Sort
+    |--------------------------------------------------------------------------
+    |
+    | This option specifies the navigation sort used in the chat navigation. You can
+    | customize this if you have a different sort order in your application.
+    |
+    */
+
+    'navigation_sort' => 1,
+
+    /*
+    |--------------------------------------------------------------------------
     | Max Content Width
     |--------------------------------------------------------------------------
     |
