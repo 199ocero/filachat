@@ -20,6 +20,11 @@ class FilaChat extends Page
         return config('filachat.slug') . '/{id?}';
     }
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return config('filachat.show_in_menu', true);
+    }
+
     public static function getNavigationLabel(): string
     {
         return __(config('filachat.navigation_label'));
