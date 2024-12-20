@@ -16,6 +16,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Show menu item
+    |--------------------------------------------------------------------------
+    |
+    | This option controls whether roles (user, agent) are used in the chat
+    | system. If disabled, all users can chat with each other without role
+    | constraints.
+    |
+    */
+    'show_in_menu' => true,
+
+    /*
+    |--------------------------------------------------------------------------
     | User Model
     |--------------------------------------------------------------------------
     |
