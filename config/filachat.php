@@ -19,9 +19,9 @@ return [
     | Show menu item
     |--------------------------------------------------------------------------
     |
-    | This option controls whether roles (user, agent) are used in the chat
-    | system. If disabled, all users can chat with each other without role
-    | constraints.
+    | This option controls whether this plugin registers a menu item in the
+    | sidebar. If disabled, you can manually register a navigation item in a
+    | different part of the panel.
     |
     */
     'show_in_menu' => true,
